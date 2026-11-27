@@ -1,3 +1,5 @@
+> Revisão de segurança independente e testes de produção ainda são necessários. Veja `docs/PRONTIDAO-INTEGRACOES.md`.
+
 # Segurança e LGPD
 
 ## Controles implementados
@@ -6,9 +8,9 @@
 - RBAC: `consumer`, `merchant`, `courier`, `admin`. Rotas protegidas por middleware; admins não podem ser criados via cadastro público.
 - Escopo por estabelecimento: rotas de merchant usam `owner_id` da sessão; produtos e pedidos de outras lojas retornam 404.
 - Entregador vê apenas dados do próprio cadastro e repasses próprios.
-- Validação Zod em toda entrada; SQL parametrizado; escape de HTML pelo React; Docker/nginx com headers de segurança.
+- Validação Zod em entradas selecionadas; SQL parametrizado; escape de HTML pelo React; Docker/nginx com headers de segurança.
 - Rate limit geral por IP (600/15 min) e bloqueio de login após 5 falhas (15 min).
-- Webhooks com verificação HMAC antes de processar; idempotência por evento e por pagamento.
+- Webhooks e estornos estão bloqueados até a integração e homologação com o provedor. Os adaptadores são experimentais.
 - `audit_logs` registra aprovações, suspensões, alterações financeiras, estornos, exportação LGPD e ações administrativas.
 - LGPD: consentimento no cadastro, exportação de dados, solicitação de exclusão, política de privacidade e suporte.
 

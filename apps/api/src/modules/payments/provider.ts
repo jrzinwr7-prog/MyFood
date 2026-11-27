@@ -21,7 +21,7 @@ export interface PaymentProvider {
 
 /** Modalidade sem provedor: NUNCA aprova automaticamente. Pagamento fica pendente
  *  até confirmação explícita do estabelecimento/administrador (dinheiro/PIX manual). */
-const manualProvider: PaymentProvider = {
+export const manualProvider: PaymentProvider = {
   name: 'none',
   async initialize(input) {
     if (!['cash', 'pix_manual'].includes(input.method))

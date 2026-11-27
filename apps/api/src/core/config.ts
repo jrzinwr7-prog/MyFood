@@ -27,3 +27,8 @@ export const config = {
   },
   isProduction: process.env.NODE_ENV === 'production',
 };
+
+// Nunca iniciar produção com a chave pública de desenvolvimento.
+if (config.isProduction && (!process.env.JWT_SECRET || Buffer.byteLength(config.jwtSecret, 'utf8') < 32 || config.jwtSecret === 'development-only-secret-change-in-production' || config.jwtSecret === 'troque-por-uma-chave-aleatoria-de-32-bytes')) {
+  throw new Error('JWT_SECRET de produção deve ser uma chave aleatória de pelo menos 32 bytes.');
+}

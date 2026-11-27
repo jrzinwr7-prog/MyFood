@@ -33,8 +33,8 @@ Base: `http://localhost:4000/api` (em dev, o Vite faz proxy em `/api`). Autentic
 | POST | `/payments/orders/:id/initialize` | consumer | iniciar pagamento (header `Idempotency-Key`) |
 | GET | `/payments/orders/:id` | participantes | pagamento e transações |
 | POST | `/payments/:id/confirm-manual` | merchant/admin | confirmação explícita de dinheiro/PIX manual |
-| POST | `/payments/:id/refund` | admin | estorno no provedor + registro |
-| POST | `/webhooks/:provider` | provedor | webhook com assinatura validada |
+| POST | `/payments/:id/refund` | admin | bloqueado: estorno não implementado para produção |
+| POST | `/webhooks/:provider` | provedor | bloqueado até implementação e homologação |
 | GET/POST/PATCH/DELETE | `/products` | merchant | cardápio, grupos e adicionais |
 | GET/PATCH | `/merchant/me`, `/merchant/dashboard`, `/merchant/orders`, `/merchant/finance`, `/merchant/coupons`, `/merchant/settings` | merchant | portal |
 | POST | `/merchant/orders/:id/accept`, `/reject`, `/status`, `/request-courier` | merchant | operação |

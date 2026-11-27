@@ -14,14 +14,14 @@ export default function Checkout() {
   const [addressId, setAddressId] = useState('');
   const [method, setMethod] = useState('pix_manual');
   const [creating, setCreating] = useState(false);
-  const [provider, setProvider] = useState('none');
+  const [onlineCards, setOnlineCards] = useState(false);
   const [newOpen, setNewOpen] = useState(false);
   const [form, setForm] = useState({ label: 'Casa', cep: '', street: '', number: '', complement: '', neighborhood: '', city: '', state: 'BA' });
   const [accept, setAccept] = useState(false);
   const [error, setError] = useState('');
 
   useEffect(() => {
-    api.get('/catalog/public').then(p => setProvider(p.paymentsProvider)).catch(() => {});
+    api.get('/catalog/public').then(p => setOnlineCards(p.features?.onlineCards === true)).catch(() => {});
     if (!user) { nav('/entrar'); return; }
     api.get('/addresses').then(r => {
       setAddresses(r.items);
@@ -87,7 +87,7 @@ export default function Checkout() {
               <QrCode size={20} className="text-coral" /><span className="text-xs"><b className="block text-sm">PIX manual</b>Você recebe as instruções e o estabelecimento confirma o recebimento.</span></button>
             <button onClick={() => setMethod('cash')} className={`flex w-full items-center gap-3 rounded-2xl border p-4 text-left ${method === 'cash' ? 'border-coral bg-coral/5' : 'border-line'}`}>
               <Banknote size={20} className="text-coral" /><span className="text-xs"><b className="block text-sm">Dinheiro na entrega</b>Pagamento confirmado pelo estabelecimento.</span></button>
-            {provider !== 'none' && <>
+            {onlineCards && <>
               <button onClick={() => setMethod('pix')} className={`flex w-full items-center gap-3 rounded-2xl border p-4 text-left ${method === 'pix' ? 'border-coral bg-coral/5' : 'border-line'}`}>
                 <QrCode size={20} className="text-coral" /><span className="text-xs"><b className="block text-sm">PIX online</b>Confirmação automática via provedor.</span></button>
               <button onClick={() => setMethod('credit_card')} className={`flex w-full items-center gap-3 rounded-2xl border p-4 text-left ${method === 'credit_card' ? 'border-coral bg-coral/5' : 'border-line'}`}>
@@ -96,7 +96,7 @@ export default function Checkout() {
                 <CreditCard size={20} className="text-coral" /><span className="text-xs"><b className="block text-sm">Cartão de débito</b>Quando suportado pelo provedor.</span></button>
             </>}
           </div>
-          {provider === 'none' && <p className="mt-3 rounded-xl bg-mist p-3 text-[11px] text-ink/55">Pagamentos online exigem credenciais do provedor. Configure <b>PAYMENTS_PROVIDER</b> para habilitar PIX automático e cartões.</p>}
+          {!onlineCards && <p className="mt-3 rounded-xl bg-mist p-3 text-[11px] text-ink/55">Pagamentos online ainda não estão disponíveis; dependem de integração e testes com um provedor.</p>}
         </Card>
       </div>
       <div className="lg:sticky lg:top-24 lg:self-start">

@@ -1,8 +1,8 @@
 # MyFood — Plataforma de delivery local
 
-Plataforma completa (código real, banco persistente e APIs) que conecta **consumidores**, **estabelecimentos**, **entregadores** e **administradores**. PT-BR, BRL, endereços brasileiros, com suporte a múltiplas cidades via configuração.
+Projeto em desenvolvimento (código real, banco local persistente e API própria) que conecta **consumidores**, **estabelecimentos**, **entregadores** e **administradores**. PT-BR, BRL, endereços brasileiros, com suporte a múltiplas cidades via configuração.
 
-> **Estado atual:** núcleo transacional implementado e testado; interfaces web e aplicativos Expo implementados. Dependências externas (credenciais de pagamento, contas de loja, domínio, VAPID) estão documentadas em `docs/DEPLOYMENT.md` e `docs/PAYMENTS.md`. Nada é apresentado como pago/aprovado quando apenas pendente.
+> **Estado atual:** projeto em desenvolvimento, não pronto para produção. Pagamentos online, webhooks e estornos estão desativados por segurança; mapas, push, upload e outras integrações ainda não foram concluídos. Veja `docs/PRONTIDAO-INTEGRACOES.md` para bloqueios e próximos passos.
 
 ## Execução rápida (desenvolvimento)
 
@@ -24,7 +24,7 @@ cd apps/mobile && npm install && npm start
 Outros comandos:
 
 ```bash
-npm test                # 19 testes (unitários + integração + fluxo completo)
+npm test                # 21 testes (unitários + integração + fluxo completo)
 npm run typecheck       # API, web e shared
 npm run build:web       # bundle de produção do site/painéis
 npm run build:api       # checagem de tipos da API
@@ -49,8 +49,8 @@ Regras financeiras ficam no servidor (`packages/shared` + `apps/api/src/modules/
 - **Consumidor:** cadastro/login, busca e filtros, categorias, favoritos, página da loja com horários/mapa/cardápio, produtos com grupos de opções e adicionais, carrinho com cálculo no servidor, cupom, endereços (ViaCEP), checkout, pedidos, acompanhamento com 9 estados + cancelamento/falha, avaliações, repetir pedido, chat por pedido, perfil LGPD.
 - **Estabelecimento:** cadastro independente com aprovação, dashboard, pedidos em tempo real, aceitar/recusar/preparar/solicitar entregador, cardápio completo (produtos, opções, disponibilidade, ordem), configurações comerciais e horários, cupons, financeiro com comissões e repasses.
 - **Entregador:** cadastro com aprovação, online/offline, solicitações geográficas, aceite atômico sem corrida, retirada/entrega, localização compartilhada somente durante a entrega, ganhos e histórico.
-- **Admin:** dashboard com métricas e gráficos, aprovação/suspensão de lojas e entregadores, gestão de consumidores, pedidos, financeiro, repasses, estornos, categorias, banners, comissões, cidades e logs de auditoria.
-- **Plataforma:** RBAC, JWT, bcrypt, rate limiting, validação Zod, webhooks assinados, idempotência, transações ACID, WebSocket, notificações internas, LGPD e testes automatizados.
+- **Admin:** dashboard com métricas e gráficos, aprovação/suspensão de lojas e entregadores, gestão de consumidores, pedidos, financeiro, registros de repasses, categorias, banners, comissões, cidades e logs de auditoria.
+- **Plataforma:** RBAC, JWT, bcrypt, rate limiting, validação Zod, transações locais, testes de idempotência manual, WebSocket, notificações internas, LGPD e testes automatizados.
 
 ## Documentação
 

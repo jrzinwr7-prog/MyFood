@@ -260,8 +260,27 @@ describe('Fluxo ponta a ponta', () => {
     assert.ok(ok.data.orders.total >= 1);
   });
 
-  test('17. webhook com assinatura inválida é rejeitado', async () => {
+  test('17. webhook permanece bloqueado até integração validada', async () => {
     const res = await fetch(`${base}/api/webhooks/none`, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: '{}' });
-    assert.equal(res.status, 401);
+    assert.equal(res.status, 409);
+    assert.equal((await res.json() as any).code, 'webhook_not_available');
+  });
+
+  test('18. outra loja não pode confirmar pagamento já confirmado', async () => {
+    const { run } = await import('../src/db/index.js');
+    const { signToken } = await import('../src/core/auth.js');
+    run('INSERT INTO users (id,name,email,phone,password_hash,role,status,created_at) VALUES (?,?,?,?,?,?,?,?)',
+      'other_merchant', 'Outra loja', 'outra@teste.local', '74999999999', 'unused', 'merchant', 'active', new Date().toISOString());
+    const token = await signToken({ id: 'other_merchant', name: 'Outra loja', email: 'outra@teste.local', role: 'merchant' });
+    const r = await api(`/api/payments/${paymentId}/confirm-manual`, { method: 'POST', token, body: {} });
+    assert.equal(r.status, 401);
+  });
+
+  test('19. estorno não é registrado sem execução real', async () => {
+    const r = await api(`/api/payments/${paymentId}/refund`, { method: 'POST', token: adminToken, body: { reason: 'Teste' } });
+    assert.equal(r.status, 409);
+    assert.equal(r.data.code, 'refund_not_available');
+    const p = await api(`/api/payments/orders/${orderId}`, { token: adminToken });
+    assert.equal(p.data.payment.status, 'approved');
   });
 });

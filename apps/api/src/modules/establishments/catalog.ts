@@ -59,7 +59,7 @@ export function productsOf(establishmentId: string): any[] {
 catalogRouter.get('/public', asyncRoute((_req, res) => {
   res.json({ appName: 'MyFood', currency: 'BRL', locale: 'pt-BR', city: setting('city', 'Lapão'),
     states: setting('states', ['BA']), paymentsProvider: config.payments.provider,
-    features: { pixManual: true, cash: true, onlineCards: config.payments.provider !== 'none' },
+    features: { pixManual: true, cash: true, onlineCards: false },
     privacyUrl: '/privacidade', termsUrl: '/termos' });
 }));
 

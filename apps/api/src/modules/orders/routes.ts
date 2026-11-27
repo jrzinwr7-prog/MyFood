@@ -30,8 +30,8 @@ ordersRouter.post('/', asyncRoute(async (req, res) => {
   if (!est) throw notFound('Estabelecimento não disponível');
   const address = get<any>('SELECT * FROM addresses WHERE id=? AND user_id=?', body.addressId, req.auth!.id);
   if (!address) throw notFound('Endereço de entrega não encontrado');
-  if (['credit_card', 'debit_card', 'pix'].includes(body.paymentMethod) && config.payments.provider === 'none')
-    throw bad('Este método exige provedor de pagamento configurado. Use PIX manual ou dinheiro na entrega.', 'payment_provider_not_configured');
+  if (['credit_card', 'debit_card', 'pix'].includes(body.paymentMethod))
+    throw bad('Pagamento online ainda não está disponível. Use PIX manual ou dinheiro na entrega.', 'payment_provider_not_configured');
   const cashSetting = get<{ value: string }>("SELECT value FROM app_settings WHERE key='cash_enabled'");
   if (body.paymentMethod === 'cash' && cashSetting && JSON.parse(cashSetting.value) === false)
     throw bad('Pagamento em dinheiro na entrega está desabilitado pela plataforma');

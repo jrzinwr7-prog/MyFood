@@ -10,6 +10,5 @@ export function notify(userId: string | null | undefined, type: string, title: s
   const row = get<{ id: string; type: string; title: string; body: string; data: string; read_at: string | null; created_at: string }>(
     'SELECT * FROM notifications WHERE id=?', id);
   emit(userId, 'notification', row);
-  // Push real (Web Push/VAPID) é habilitado quando as credenciais são configuradas pelo proprietário.
-  // Ver docs/PAGAMENTOS-E-NOTIFICACOES.md para o contrato de configuração.
+  // Push externo ainda não foi implementado; ver docs/PRONTIDAO-INTEGRACOES.md.
 }

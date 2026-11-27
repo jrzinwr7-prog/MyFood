@@ -1,3 +1,5 @@
+> Não implante para produção sem resolver os bloqueios descritos em `docs/PRONTIDAO-INTEGRACOES.md`.
+
 # Implantação
 
 ## 1. Servidor
@@ -28,7 +30,7 @@ O `Dockerfile` de exemplo instala dependências e expõe a API na porta 4000. Us
 
 ## 4. Pagamentos
 
-Siga `docs/PAYMENTS.md`. Sem credenciais, a plataforma opera apenas com PIX manual/dinheiro, sempre pendente de confirmação. Isso é uma decisão explícita de produto, não uma simulação.
+Siga `docs/PAYMENTS.md`. PIX manual e dinheiro ficam pendentes até confirmação. Pagamentos online, webhooks e estornos estão bloqueados mesmo com credenciais, até integração e homologação. Isso é uma decisão explícita de produto, não uma simulação.
 
 ## 5. Storage de imagens
 
@@ -36,7 +38,7 @@ Produtos/lojas aceitam URL pública. Configure S3/R2/Cloudinary + CDN e forneça
 
 ## 6. Notificações push
 
-Notificações internas e WebSocket já funcionam. Para Web Push, gere chaves VAPID e preencha `VAPID_PUBLIC_KEY`/`VAPID_PRIVATE_KEY`; o cliente web e o service worker devem ser adicionados nessa etapa. Hoje não há service worker — não afirma-se que push está ativo.
+Notificações internas e WebSocket têm implementação local. Push web e mobile ainda precisam ser implementados e testados; as variáveis VAPID não o habilitam.
 
 ## 7. Mobile
 

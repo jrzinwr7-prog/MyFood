@@ -12,6 +12,9 @@ const CATEGORIES = [
 ];
 
 async function main() {
+  if (config.isProduction && (!process.env.ADMIN_EMAIL || !process.env.ADMIN_PASSWORD || process.env.ADMIN_PASSWORD.length < 12 || process.env.ADMIN_PASSWORD === 'Admin@12345')) {
+    throw new Error('Em produção defina ADMIN_EMAIL e ADMIN_PASSWORD forte (mínimo 12 caracteres).');
+  }
   CATEGORIES.forEach(([name, slug, icon], i) => {
     if (!get('SELECT id FROM categories WHERE slug=?', slug))
       run('INSERT INTO categories (id,name,slug,icon,active,sort_order) VALUES (?,?,?,?,1,?)', uid('cat_'), name, slug, icon, i);
