@@ -4,7 +4,7 @@ import { Loader2, Inbox } from 'lucide-react';
 export function Button({ children, variant = 'primary', size = 'md', className = '', loading, ...props }:
   React.ButtonHTMLAttributes<HTMLButtonElement> & { variant?: 'primary'|'ghost'|'outline'|'dark'|'danger'|'mint'; size?: 'sm'|'md'|'lg'; loading?: boolean }) {
   const variants = {
-    primary: 'bg-coral text-white hover:bg-[#e84b2f] shadow-lg shadow-coral/20',
+    primary: 'bg-coral text-white hover:bg-[#982f18] shadow-lg shadow-coral/20',
     ghost: 'bg-transparent text-ink hover:bg-black/5',
     outline: 'border border-line bg-white text-ink hover:border-ink/30',
     dark: 'bg-ink text-white hover:bg-navy',
@@ -41,7 +41,7 @@ export function Card({ children, className = '', ...rest }: React.HTMLAttributes
 }
 export function Badge({ children, tone = 'neutral' }: { children: React.ReactNode; tone?: 'neutral'|'green'|'red'|'orange'|'blue' }) {
   const tones = { neutral: 'bg-mist text-ink/70', green: 'bg-emerald-50 text-emerald-700', red: 'bg-red-50 text-red-600',
-    orange: 'bg-orange-50 text-orange-700', blue: 'bg-blue-50 text-blue-700' };
+    orange: 'bg-orange-50 text-orange-700', blue: 'bg-orange-50 text-orange-800' };
   return <span className={`inline-flex items-center rounded-full px-2.5 py-1 text-[11px] font-bold ${tones[tone]}`}>{children}</span>;
 }
 export function Spinner({ label = 'Carregando…' }: { label?: string }) {
@@ -66,7 +66,7 @@ export function Modal({ open, onClose, title, children, wide }: { open: boolean;
   </div>;
 }
 export function StatCard({ label, value, hint, icon, tone = 'coral' }: { label: string; value: string; hint?: string; icon?: React.ReactNode; tone?: string }) {
-  const bg: any = { coral: 'bg-coral/10 text-coral', mint: 'bg-emerald-50 text-emerald-600', blue: 'bg-blue-50 text-blue-600', ink: 'bg-ink/5 text-ink' };
+  const bg: any = { coral: 'bg-coral/10 text-coral', mint: 'bg-emerald-50 text-emerald-600', blue: 'bg-orange-50 text-orange-800', ink: 'bg-ink/5 text-ink' };
   return <Card className="p-5">
     <div className="flex items-start justify-between gap-3">
       <div><p className="text-xs font-semibold text-ink/50">{label}</p><p className="mt-1 text-2xl font-extrabold tracking-tight">{value}</p>{hint && <p className="mt-1 text-[11px] text-ink/45">{hint}</p>}</div>

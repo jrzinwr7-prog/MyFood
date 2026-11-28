@@ -1,13 +1,13 @@
 {
   "expo": {
-    "name": "MyFood",
+    "name": "Fast Entregas",
     "slug": "myfood",
     "version": "1.0.0",
     "orientation": "portrait",
     "userInterfaceStyle": "light",
     "scheme": "myfood",
     "splash": {
-      "backgroundColor": "#101b2d",
+      "backgroundColor": "#fbf6ee",
       "resizeMode": "contain"
     },
     "assetBundlePatterns": [
@@ -20,7 +20,7 @@
     "android": {
       "package": "com.myfood.app",
       "adaptiveIcon": {
-        "backgroundColor": "#101b2d"
+        "backgroundColor": "#fbf6ee"
       }
     },
     "web": {
@@ -30,7 +30,7 @@
       [
         "expo-location",
         {
-          "locationWhenInUsePermission": "Permita que o MyFood use sua localização para conectar você às entregas e compartilhá-la durante uma entrega ativa."
+          "locationWhenInUsePermission": "Permita que o Fast Entregas use sua localização para conectar você às entregas e compartilhá-la durante uma entrega ativa."
         }
       ]
     ],

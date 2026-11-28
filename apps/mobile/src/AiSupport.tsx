@@ -4,6 +4,9 @@ import { api } from './lib/api';
 import { Button, Card, Input, Muted, Title } from './components';
 import { theme } from './lib/theme';
 
+function SupportText({ text }: { text: string }) {
+  return <>{text.split(/(\*\*[^*\n]+\*\*)/g).map((part, i) => part.startsWith('**') && part.endsWith('**') ? <Text key={i} style={{ fontWeight: '700' }}>{part.slice(2, -2)}</Text> : part)}</>;
+}
 type Message = { role: 'user' | 'assistant'; content: string };
 export default function AiSupport() {
   const [messages, setMessages] = useState<Message[]>([]);
@@ -19,9 +22,9 @@ export default function AiSupport() {
     finally { setPending(false); }
   }
   return <View>
-    <Title>Suporte MyFood</Title><Muted>Assistente virtual · respostas por inteligência artificial</Muted>
+    <Title>Suporte Fast Entregas</Title><Muted>Assistente virtual · respostas por inteligência artificial</Muted>
     <Card><Text style={{ color: theme.ink }}>Oi! Posso ajudar com dúvidas sobre o app, pedidos e entregas. Como posso ajudar?</Text></Card>
-    {messages.map((m, i) => <Card key={i}><Text style={{ fontWeight: '800', color: m.role === 'user' ? theme.ink : theme.coral }}>{m.role === 'user' ? 'Você' : 'Assistente'}</Text><Text style={{ color: theme.ink, marginTop: 5 }}>{m.content}</Text></Card>)}
+    {messages.map((m, i) => <Card key={i}><Text style={{ fontWeight: '800', color: m.role === 'user' ? theme.ink : theme.coral }}>{m.role === 'user' ? 'Você' : 'Assistente'}</Text><Text style={{ color: theme.ink, marginTop: 5 }}>{m.role === 'assistant' ? <SupportText text={m.content} /> : m.content}</Text></Card>)}
     {error ? <Text accessibilityRole="alert" style={{ color: '#b91c1c', marginBottom: 8 }}>{error}</Text> : null}
     <Input label="Sua pergunta" placeholder="Escreva sua dúvida aqui..." value={draft} onChangeText={setDraft} multiline />
     <Button onPress={send} loading={pending} disabled={!draft.trim()}>Enviar pergunta</Button>

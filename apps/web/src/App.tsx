@@ -35,7 +35,7 @@ import { Spinner } from './components/ui';
 
 function RoutesView() {
   const { loadingAuth } = useApp();
-  if (loadingAuth) return <div className="grid min-h-screen place-items-center"><Spinner label="Carregando MyFood…" /></div>;
+  if (loadingAuth) return <div className="grid min-h-screen place-items-center"><Spinner label="Carregando Fast Entregas…" /></div>;
   return <Routes>
     <Route path="/" element={<Home />} />
     <Route path="/loja/:slug" element={<StorePage />} />

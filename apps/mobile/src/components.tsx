@@ -22,8 +22,8 @@ export function Input({ label, value, onChangeText, placeholder, keyboardType, s
 import { TextInput } from 'react-native';
 const TextInputCompat = TextInput;
 export function Badge({ children, tone = 'neutral' }: any) {
-  const bg: any = { neutral: theme.mist, green: '#e7f8f0', red: '#fdeaea', orange: '#fff2e2', blue: '#e8f1ff' };
-  const fg: any = { neutral: theme.ink, green: '#0a7f5b', red: '#c62828', orange: '#b45309', blue: '#1d4ed8' };
+  const bg: any = { neutral: theme.mist, green: '#e7f8f0', red: '#fdeaea', orange: '#fff2e2', blue: '#fff2e2' };
+  const fg: any = { neutral: theme.ink, green: '#0a7f5b', red: '#c62828', orange: '#b45309', blue: '#9a3412' };
   return <View style={[styles.badge, { backgroundColor: bg[tone] }]}><Text style={[styles.badgeText, { color: fg[tone] }]}>{children}</Text></View>;
 }
 export function Empty({ title, text }: any) { return <View style={styles.empty}><Text style={{ fontSize: 32 }}>🍽️</Text><Title size={17}>{title}</Title><Muted>{text}</Muted></View>; }
@@ -37,7 +37,7 @@ export function Overlay({ visible, onClose, children }: any) {
 }
 const styles = StyleSheet.create({
   card: { backgroundColor: '#fff', borderRadius: 20, padding: 16, marginBottom: 12,
-    shadowColor: '#101b2d', shadowOpacity: 0.06, shadowRadius: 12, elevation: 2 },
+    shadowColor: '#402920', shadowOpacity: 0.06, shadowRadius: 12, elevation: 2 },
   title: { fontWeight: '800', color: theme.ink }, muted: { color: theme.muted, fontSize: 12, lineHeight: 18 },
   button: { height: 48, borderRadius: 16, alignItems: 'center', justifyContent: 'center', paddingHorizontal: 18, marginTop: 8 },
   primary: { backgroundColor: theme.coral }, outline: { backgroundColor: '#fff', borderWidth: 1, borderColor: theme.line },

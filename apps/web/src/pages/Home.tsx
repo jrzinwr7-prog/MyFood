@@ -87,27 +87,26 @@ export default function Home() {
   const topRated = useMemo(() => [...items].sort((a, b) => b.ratingAvg - a.ratingAvg).slice(0, 6), [items]);
 
   return <ConsumerShell>
-    <section className="relative mb-7 overflow-hidden rounded-3xl bg-ink text-white sm:rounded-[2rem]">
-      <img src={`${import.meta.env.BASE_URL}hero-burger.jpg`} alt="Hambúrguer artesanal" className="absolute inset-0 h-full w-full object-cover opacity-55" />
-      <div className="absolute inset-0 bg-gradient-to-r from-ink via-ink/85 to-transparent" />
-      <div className="relative px-6 py-10 sm:px-10 sm:py-14">
-        <Badge tone="orange">ENTREGA LOCAL · FEITO COM CARINHO</Badge>
-        <h1 className="mt-4 max-w-md text-3xl font-black leading-tight sm:text-5xl">O melhor da sua cidade, <span className="text-tangerine">na sua porta.</span></h1>
-        <p className="mt-3 max-w-sm text-sm text-white/70">Descubra estabelecimentos independentes, peça em poucos toques e acompanhe cada etapa.</p>
-        <form onSubmit={e => { e.preventDefault(); setParams(search ? { q: search } : {}); }} className="mt-6 flex max-w-lg gap-2">
-          <div className="relative flex-1"><Search size={18} className="absolute left-4 top-1/2 -translate-y-1/2 text-ink/40" />
-            <input value={search} onChange={e => setSearch(e.target.value)} placeholder="O que você quer comer?" className="h-12 w-full rounded-2xl bg-white pl-11 pr-4 text-sm text-ink outline-none ring-coral focus:ring-4" /></div>
-          <Button type="submit" className="shrink-0">Buscar</Button>
+    <section className="relative mb-9 overflow-hidden rounded-[2rem] bg-[#f7dfc7] shadow-card">
+      <div className="absolute inset-0 sm:left-[38%]"><img src={`${import.meta.env.BASE_URL}fast-verao.jpg`} alt="" className="h-full w-full object-cover object-center" /></div>
+      <div className="absolute inset-0 bg-gradient-to-r from-[#fff4e4] via-[#fff4e4]/95 to-[#fff4e4]/55 sm:via-[#fff4e4]/95 sm:to-transparent" />
+      <div className="relative px-6 py-10 sm:px-10 sm:py-14 lg:px-14 lg:py-16">
+        <p className="text-[11px] font-black uppercase tracking-[.2em] text-coral">Sua cidade tem sabor · Fast Entregas</p>
+        <h1 className="mt-4 max-w-lg text-4xl font-black leading-[1.08] tracking-tight text-ink sm:text-5xl lg:text-6xl">O melhor do seu dia <span className="text-coral">chega até você.</span></h1>
+        <p className="mt-4 max-w-sm text-sm leading-relaxed text-ink/75">Descubra os sabores da sua cidade, escolha seus favoritos e acompanhe seu pedido.</p>
+        <form onSubmit={e => { e.preventDefault(); setParams(search ? { q: search } : {}); }} className="mt-7 flex max-w-lg gap-2">
+          <div className="relative min-w-0 flex-1"><Search size={18} className="absolute left-4 top-1/2 -translate-y-1/2 text-ink/50" />
+            <input value={search} onChange={e => setSearch(e.target.value)} aria-label="Buscar restaurantes ou pratos" placeholder="O que você quer comer?" className="h-12 w-full rounded-2xl border border-white bg-white pl-11 pr-4 text-sm text-ink shadow-sm outline-none ring-coral focus:ring-4" /></div>
+          <Button type="submit" className="h-12 shrink-0">Buscar</Button>
         </form>
-        <div className="mt-4 flex flex-wrap items-center gap-2 text-xs text-white/70">
-          <MapPin size={14} className="text-coral" />
-          {address ? <span>Entregando em <b className="text-white">{address.label}, {address.street}, {address.number}</b></span> : <Link to="/perfil" className="underline underline-offset-2">Informe seu endereço de entrega</Link>}
+        <div className="mt-5 flex flex-wrap items-center gap-2 text-xs text-ink/75"><MapPin size={15} className="text-coral" />
+          {address ? <span>Entregando em <b>{address.label}, {address.street}, {address.number}</b></span> : <Link to="/perfil" className="font-bold underline underline-offset-2">Informe seu endereço de entrega</Link>}
         </div>
       </div>
     </section>
 
     {banners.length > 0 && <div className="no-scrollbar mb-7 flex gap-3 overflow-x-auto">
-      {banners.map((b, i) => <div key={i} className="flex min-w-[280px] flex-1 items-center justify-between rounded-3xl bg-gradient-to-br from-coral to-tangerine p-5 text-white shadow-card">
+      {banners.map((b, i) => <div key={i} className="flex min-w-[280px] flex-1 items-center justify-between rounded-3xl bg-gradient-to-br from-[#a63118] to-[#b94c20] p-5 text-white shadow-card">
         <div><p className="text-sm font-black">{b.title}</p><p className="mt-1 text-xs text-white/80">{b.subtitle}</p></div><ArrowRight size={22} /></div>)}
     </div>}
 

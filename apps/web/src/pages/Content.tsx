@@ -8,7 +8,7 @@ function Doc({ title, children }: { title: string; children: React.ReactNode }) 
     <p className="mt-4 text-xs text-ink/45">Última atualização: 26/11/2026 · Versão 1.0</p></div></ConsumerShell>;
 }
 export function Terms() { return <Doc title="Termos de uso">
-  <h2 className="text-lg font-extrabold text-ink">1. Sobre a plataforma</h2><p>O MyFood é uma plataforma tecnológica que interpõe consumidores, estabelecimentos e entregadores. Não somos fabricantes dos produtos anunciados; cada estabelecimento é responsável pela procedência, preparo, higiene e veracidade das informações do cardápio.</p>
+  <h2 className="text-lg font-extrabold text-ink">1. Sobre a plataforma</h2><p>O Fast Entregas é uma plataforma tecnológica que interpõe consumidores, estabelecimentos e entregadores. Não somos fabricantes dos produtos anunciados; cada estabelecimento é responsável pela procedência, preparo, higiene e veracidade das informações do cardápio.</p>
   <h2 className="text-lg font-extrabold text-ink">2. Cadastros e aprovação</h2><p>Consumidores podem se cadastrar livremente. Estabelecimentos e entregadores passam por análise e aprovação da administradora antes de operar. É proibido fornecer dados falsos ou documentos inválidos.</p>
   <h2 className="text-lg font-extrabold text-ink">3. Pedidos, preços e pagamentos</h2><p>Os preços são definidos pelos estabelecimentos. O valor final é calculado no servidor no momento da confirmação, incluindo adicionais, descontos e taxa de entrega. Pagamentos online dependem de provedor configurado; quando indisponíveis, o sistema oferece apenas modalidades pendentes de confirmação manual, sem afirmar pagamento aprovado.</p>
   <h2 className="text-lg font-extrabold text-ink">4. Comissões</h2><p>A plataforma cobra comissão padrão de 8% sobre o valor elegível dos produtos e 8% sobre a taxa de entrega, configurável pelo administrador. O repasse ao entregador corresponde ao restante da taxa de entrega, deduzida a comissão.</p>
@@ -17,7 +17,7 @@ export function Terms() { return <Doc title="Termos de uso">
   <p className="mt-4">Dúvidas: <Link className="text-coral underline" to="/ajuda">central de ajuda</Link>.</p>
 </Doc>; }
 export function Privacy() { return <Doc title="Política de privacidade e LGPD">
-  <p>O MyFood atua como controlador dos dados cadastrais e como operador de dados de pedidos conforme a Lei nº 13.709/2018 (LGPD).</p>
+  <p>O Fast Entregas atua como controlador dos dados cadastrais e como operador de dados de pedidos conforme a Lei nº 13.709/2018 (LGPD).</p>
   <h2 className="text-lg font-extrabold text-ink">Dados coletados</h2><p>Nome, e-mail, telefone, endereços de entrega, documentos de estabelecimentos/entregadores, histórico de pedidos, mensagens, avaliações e registros de auditoria. Não armazenamos números completos de cartões: dados de pagamento são tokenizados pelo provedor.</p>
   <h2 className="text-lg font-extrabold text-ink">Finalidades</h2><p>Execução de pedidos, comunicação entre participantes, prevenção à fraude, cumprimento de obrigações legais, cálculo e repasse financeiro, suporte e melhoria da experiência.</p>
   <h2 className="text-lg font-extrabold text-ink">Compartilhamento</h2><p>Dados necessários são compartilhados com o estabelecimento e o entregador envolvidos no pedido. Endereços completos de consumidores não são exibidos publicamente. Localização em tempo real é compartilhada apenas durante a entrega e mediante ação explícita do entregador.</p>

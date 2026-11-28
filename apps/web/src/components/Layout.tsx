@@ -6,8 +6,8 @@ import { getToken } from '../lib/api';
 
 function Logo({ compact }: { compact?: boolean }) {
   return <Link to="/" className="flex items-center gap-2.5 shrink-0">
-    <span className="grid h-9 w-9 place-items-center rounded-xl bg-gradient-to-br from-coral to-tangerine text-lg font-black text-white shadow-lg shadow-coral/25">m</span>
-    {!compact && <span className="text-xl font-extrabold tracking-tight">My<span className="text-coral">Food</span></span>}
+    <span className="grid h-9 w-9 place-items-center rounded-xl bg-gradient-to-br from-coral to-tangerine text-lg font-black text-white shadow-lg shadow-coral/25">F</span>
+    {!compact && <span className="text-xl font-extrabold tracking-tight">Fast <span className="text-coral">Entregas</span></span>}
   </Link>;
 }
 
@@ -22,7 +22,7 @@ export function ConsumerShell({ children }: { children: React.ReactNode }) {
         <div className="hidden flex-1 items-center md:flex">
           <form onSubmit={e => { e.preventDefault(); navigate(`/?q=${encodeURIComponent(q)}`); }} className="relative w-full max-w-md">
             <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-ink/35" size={18} />
-            <input value={q} onChange={e => setQ(e.target.value)} placeholder="Busque restaurants ou pratos" className="h-11 w-full rounded-2xl border border-line bg-mist pl-11 pr-4 text-sm outline-none focus:border-coral" />
+            <input value={q} onChange={e => setQ(e.target.value)} placeholder="Busque restaurantes ou pratos" className="h-11 w-full rounded-2xl border border-line bg-mist pl-11 pr-4 text-sm outline-none focus:border-coral" />
           </form>
         </div>
         <div className="ml-auto flex items-center gap-1.5">
@@ -54,7 +54,7 @@ export function ConsumerShell({ children }: { children: React.ReactNode }) {
       <div className="mx-auto flex max-w-6xl flex-wrap items-center justify-between gap-5 px-6 text-xs text-ink/50">
         <div><Logo /> <p className="mt-2">Delivery local conectando você ao melhor da sua cidade.</p></div>
         <div className="flex gap-6"><Link to="/termos">Termos de uso</Link><Link to="/privacidade">Privacidade (LGPD)</Link><Link to="/ajuda">Ajuda</Link><Link to="/suporte-ia">Suporte IA</Link></div>
-        <p>© {new Date().getFullYear()} MyFood</p>
+        <p>© {new Date().getFullYear()} Fast Entregas</p>
       </div>
     </footer>
   </div>;
