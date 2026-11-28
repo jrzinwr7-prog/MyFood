@@ -114,7 +114,7 @@ export default function Home() {
     </section>}
 
     <section>
-      <SectionTitle title={q ? `Resultados para “${q}”` : 'Explore estabelecimentos'} subtitle={VISUAL_PREVIEW ? 'O catálogo estará disponível após conectar o servidor.' : loadError ? 'Não foi possível carregar o catálogo.' : `${items.length} estabelecimento${items.length === 1 ? '' : 's'} disponível${items.length === 1 ? '' : 'is'}`}
+      <SectionTitle title={q ? `Resultados para “${q}”` : 'Explore estabelecimentos'} subtitle={VISUAL_PREVIEW ? 'O catálogo estará disponível após conectar o servidor.' : loadError ? 'Não foi possível carregar o catálogo.' : `${items.length} estabelecimento${items.length === 1 ? ' disponível' : 's disponíveis'}`}
         action={<div className="flex items-center gap-2">
           <button aria-pressed={openOnly} onClick={() => setOpenOnly(!openOnly)} className={`flex items-center gap-1.5 rounded-xl border px-3 py-2 text-[11px] font-bold ${openOnly ? 'border-mint bg-emerald-50 text-emerald-700' : 'border-line bg-white text-ink/60'}`}><StoreIcon size={14} />Abertos</button>
           <select aria-label="Ordenar estabelecimentos" value={sort} onChange={e => setSort(e.target.value)} className="rounded-xl border border-line bg-white px-3 py-2 text-[11px] font-bold outline-none">
