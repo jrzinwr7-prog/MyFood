@@ -1,6 +1,6 @@
 {
   "expo": {
-    "name": "Fast Entregas",
+    "name": "FastDelivery",
     "slug": "myfood",
     "version": "1.0.0",
     "orientation": "portrait",
@@ -30,7 +30,7 @@
       [
         "expo-location",
         {
-          "locationWhenInUsePermission": "Permita que o Fast Entregas use sua localização para conectar você às entregas e compartilhá-la durante uma entrega ativa."
+          "locationWhenInUsePermission": "Permita que o FastDelivery use sua localização para conectar você às entregas e compartilhá-la durante uma entrega ativa."
         }
       ]
     ],

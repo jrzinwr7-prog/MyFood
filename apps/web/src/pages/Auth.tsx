@@ -49,15 +49,15 @@ export default function Auth() {
   return <div className="min-h-screen bg-mist">
     <div className="grid min-h-screen lg:grid-cols-2">
       <div className="relative hidden overflow-hidden bg-ink p-12 text-white lg:flex lg:flex-col lg:justify-between">
-        <img src={`${import.meta.env.BASE_URL}fast-verao.jpg`} alt="" className="absolute inset-0 h-full w-full object-cover opacity-35" />
+        <img src={`${import.meta.env.BASE_URL}hero-burger.jpg`} alt="" className="absolute inset-0 h-full w-full object-cover opacity-35" />
         <div className="absolute inset-0 bg-gradient-to-b from-ink/95 via-ink/60 to-ink" />
-        <Link to="/" className="relative flex items-center gap-2.5 text-2xl font-black"><span className="grid h-10 w-10 place-items-center rounded-xl bg-coral text-white">F</span>Fast <span className="text-coral">Entregas</span></Link>
+        <Link to="/" className="relative flex items-center gap-2.5 text-2xl font-black"><span className="grid h-10 w-10 place-items-center rounded-xl bg-coral text-white">F</span>Fast<span className="text-coral">Delivery</span></Link>
         <div className="relative max-w-md"><h1 className="text-4xl font-black leading-tight">Tudo que sua cidade tem de melhor, <span className="text-tangerine">em um só lugar.</span></h1>
           <p className="mt-4 text-white/70">Peça, venda ou entregue. A plataforma conecta consumidores, estabelecimentos e entregadores com transparência e tecnologia.</p>
           <div className="mt-8 space-y-3 text-sm">{[[User,'Consumidores','Descubra, peça e acompanhe'],[Store,'Estabelecimentos','Gerencie cardápio e pedidos'],[Bike,'Entregadores','Receba solicitações e ganhe']].map(([Icon, t, s]: any) =>
             <div key={t} className="flex items-center gap-3 rounded-2xl bg-white/10 p-3 backdrop-blur"><Icon size={20} className="text-tangerine" /><div><b className="block">{t}</b><span className="text-xs text-white/60">{s}</span></div></div>)}</div>
         </div>
-        <p className="relative text-xs text-white/40">© {new Date().getFullYear()} Fast Entregas · Feito no Brasil</p>
+        <p className="relative text-xs text-white/40">© {new Date().getFullYear()} FastDelivery · Feito no Brasil</p>
       </div>
       <div className="flex items-center justify-center p-4 py-10 sm:p-8">
         <div className="w-full max-w-lg">

@@ -22,7 +22,7 @@ export default function AiSupport() {
     finally { setPending(false); }
   }
   return <View>
-    <Title>Suporte Fast Entregas</Title><Muted>Assistente virtual · respostas por inteligência artificial</Muted>
+    <Title>Suporte FastDelivery</Title><Muted>Assistente virtual · respostas por inteligência artificial</Muted>
     <Card><Text style={{ color: theme.ink }}>Oi! Posso ajudar com dúvidas sobre o app, pedidos e entregas. Como posso ajudar?</Text></Card>
     {messages.map((m, i) => <Card key={i}><Text style={{ fontWeight: '800', color: m.role === 'user' ? theme.ink : theme.coral }}>{m.role === 'user' ? 'Você' : 'Assistente'}</Text><Text style={{ color: theme.ink, marginTop: 5 }}>{m.role === 'assistant' ? <SupportText text={m.content} /> : m.content}</Text></Card>)}
     {error ? <Text accessibilityRole="alert" style={{ color: '#b91c1c', marginBottom: 8 }}>{error}</Text> : null}

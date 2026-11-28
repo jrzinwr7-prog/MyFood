@@ -88,10 +88,10 @@ export default function Home() {
 
   return <ConsumerShell>
     <section className="relative mb-9 overflow-hidden rounded-[2rem] bg-[#f7dfc7] shadow-card">
-      <div className="absolute inset-0 sm:left-[38%]"><img src={`${import.meta.env.BASE_URL}fast-verao.jpg`} alt="" className="h-full w-full object-cover object-center" /></div>
+      <div className="absolute inset-0 sm:left-[38%]"><img src={`${import.meta.env.BASE_URL}hero-burger.jpg`} alt="" className="h-full w-full object-cover object-center" /></div>
       <div className="absolute inset-0 bg-gradient-to-r from-[#fff4e4] via-[#fff4e4]/95 to-[#fff4e4]/55 sm:via-[#fff4e4]/95 sm:to-transparent" />
       <div className="relative px-6 py-10 sm:px-10 sm:py-14 lg:px-14 lg:py-16">
-        <p className="text-[11px] font-black uppercase tracking-[.2em] text-coral">Sua cidade tem sabor · Fast Entregas</p>
+        <p className="text-[11px] font-black uppercase tracking-[.2em] text-coral">Sua cidade tem sabor · FastDelivery</p>
         <h1 className="mt-4 max-w-lg text-4xl font-black leading-[1.08] tracking-tight text-ink sm:text-5xl lg:text-6xl">O melhor do seu dia <span className="text-coral">chega até você.</span></h1>
         <p className="mt-4 max-w-sm text-sm leading-relaxed text-ink/75">Descubra os sabores da sua cidade, escolha seus favoritos e acompanhe seu pedido.</p>
         <form onSubmit={e => { e.preventDefault(); setParams(search ? { q: search } : {}); }} className="mt-7 flex max-w-lg gap-2">

@@ -81,7 +81,7 @@ export default function Profile() {
       <Card className="p-5"><h2 className="mb-4 text-base font-extrabold">Minha atividade</h2>
         <div className="space-y-2">{[
           ['/pedidos', 'Histórico de pedidos', Package, orders.length], ['/conversas', 'Mensagens', User, null],
-          ['/merchant/cadastro', 'Quero vender no Fast Entregas', Store, null], ['/courier/cadastro', 'Quero ser entregador', Bike, null],
+          ['/merchant/cadastro', 'Quero vender no FastDelivery', Store, null], ['/courier/cadastro', 'Quero ser entregador', Bike, null],
         ].map(([to, label, Icon, n]: any) => <Link key={label} to={to} className="flex items-center gap-3 rounded-2xl bg-mist p-3 text-xs font-bold hover:bg-line">
           <Icon size={17} className="text-coral" />{label}{n !== null && <Badge>{n}</Badge>}<ArrowRight size={15} className="ml-auto" /></Link>)}</div>
         <Button variant="outline" className="mt-4 w-full" onClick={() => { logout(); nav('/'); }}>Sair da conta</Button>

@@ -21,7 +21,7 @@ export default function AuthScreen({ onLogin }: any) {
   }
   return <ScrollView contentContainerStyle={styles.container} keyboardShouldPersistTaps="handled">
     <View style={styles.hero}><View style={styles.logo}><Text style={styles.logoText}>F</Text></View>
-      <Text style={styles.brand}>Fast <Text style={{ color: theme.coral }}>Entregas</Text></Text>
+      <Text style={styles.brand}>Fast<Text style={{ color: theme.coral }}>Delivery</Text></Text>
       <Text style={styles.tagline}>Delivery local, feito para sua cidade.</Text>
     </View>
     <View style={styles.tabs}>
@@ -40,7 +40,7 @@ export default function AuthScreen({ onLogin }: any) {
       <Input label="CPF" value={f.document} onChangeText={(v: string) => set('document', v)} keyboardType="numeric" />
       <Input label="Transporte (bicycle, motorcycle ou car)" value={f.vehicle} onChangeText={(v: string) => set('vehicle', v)} />
     </>}
-    {mode === 'register' && <Text style={styles.consent}>Ao continuar, você aceita os termos de uso e a política de privacidade (LGPD) do Fast Entregas.</Text>}
+    {mode === 'register' && <Text style={styles.consent}>Ao continuar, você aceita os termos de uso e a política de privacidade (LGPD) do FastDelivery.</Text>}
     {error ? <Text style={styles.error}>{error}</Text> : null}
     <Button onPress={submit} loading={busy}>{mode === 'login' ? 'Entrar' : 'Criar conta'}</Button>
     <Text style={styles.foot}>Estabelecimentos podem se cadastrar pelo portal web.</Text>

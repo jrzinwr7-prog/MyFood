@@ -7,7 +7,7 @@ import { getToken } from '../lib/api';
 function Logo({ compact }: { compact?: boolean }) {
   return <Link to="/" className="flex items-center gap-2.5 shrink-0">
     <span className="grid h-9 w-9 place-items-center rounded-xl bg-gradient-to-br from-coral to-tangerine text-lg font-black text-white shadow-lg shadow-coral/25">F</span>
-    {!compact && <span className="text-xl font-extrabold tracking-tight">Fast <span className="text-coral">Entregas</span></span>}
+    {!compact && <span className="text-xl font-extrabold tracking-tight">Fast<span className="text-coral">Delivery</span></span>}
   </Link>;
 }
 
@@ -54,7 +54,7 @@ export function ConsumerShell({ children }: { children: React.ReactNode }) {
       <div className="mx-auto flex max-w-6xl flex-wrap items-center justify-between gap-5 px-6 text-xs text-ink/50">
         <div><Logo /> <p className="mt-2">Delivery local conectando você ao melhor da sua cidade.</p></div>
         <div className="flex gap-6"><Link to="/termos">Termos de uso</Link><Link to="/privacidade">Privacidade (LGPD)</Link><Link to="/ajuda">Ajuda</Link><Link to="/suporte-ia">Suporte IA</Link></div>
-        <p>© {new Date().getFullYear()} Fast Entregas</p>
+        <p>© {new Date().getFullYear()} FastDelivery</p>
       </div>
     </footer>
   </div>;
