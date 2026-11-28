@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { ScrollView, StyleSheet, Text, View, Pressable } from 'react-native';
+import { ScrollView, StyleSheet, Text, View, Pressable, Image } from 'react-native';
 import { api, setToken } from './lib/api';
 import { theme } from './lib/theme';
 import { Badge, Button, Input } from './components';
@@ -20,7 +20,7 @@ export default function AuthScreen({ onLogin }: any) {
     } catch (e: any) { setError(e.message); setBusy(false); }
   }
   return <ScrollView contentContainerStyle={styles.container} keyboardShouldPersistTaps="handled">
-    <View style={styles.hero}><View style={styles.logo}><Text style={styles.logoText}>F</Text></View>
+    <View style={styles.hero}><Image source={require('../assets/fastdelivery-mark.png')} style={{ width: 66, height: 66, borderRadius: 18, marginBottom: 10 }} accessibilityLabel="Marca FastDelivery" />
       <Text style={styles.brand}>Fast<Text style={{ color: theme.coral }}>Delivery</Text></Text>
       <Text style={styles.tagline}>Delivery local, feito para sua cidade.</Text>
     </View>

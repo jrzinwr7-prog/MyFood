@@ -11,7 +11,7 @@ function StoreCard({ e, favorite }: { e: any; favorite?: boolean }) {
   return <Link to={`/loja/${e.slug}`} className="card-hover block overflow-hidden rounded-3xl border border-line/80 bg-white shadow-card">
     <div className="relative h-36 overflow-hidden bg-gradient-to-br from-ink to-navy">
       {e.coverUrl ? <img src={e.coverUrl} alt="" className="h-full w-full object-cover" loading="lazy" /> :
-        <img src={`${import.meta.env.BASE_URL}hero-burger.jpg`} alt="" className="h-full w-full object-cover opacity-90" loading="lazy" />}
+        <div className="grid h-full w-full place-items-center bg-[#f3e7db] text-[#a46b4b]"><StoreIcon size={36} strokeWidth={1.3} /></div>}
       <div className="absolute inset-0 bg-gradient-to-t from-ink/60 via-transparent to-transparent" />
       <div className="absolute left-3 top-3 flex gap-2">
         {!e.isOpen && <Badge tone="red">Fechado agora</Badge>}
@@ -47,6 +47,8 @@ export default function Home() {
   const [favorites, setFavorites] = useState<any[]>([]);
   const [banners, setBanners] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
+  const [loadError, setLoadError] = useState(false);
+  const [retry, setRetry] = useState(0);
   const [address, setAddress] = useState<any>(null);
   const [sort, setSort] = useState('recommended');
   const [openOnly, setOpenOnly] = useState(false);
@@ -70,7 +72,7 @@ export default function Home() {
   }, [user?.id]);
 
   useEffect(() => {
-    setLoading(true);
+    setLoading(true); setLoadError(false);
     const qs = new URLSearchParams({ sort });
     if (q) qs.set('q', q); if (category) qs.set('category', category); if (openOnly) qs.set('open', 'true');
     if (VISUAL_PREVIEW) load(qs);
@@ -78,21 +80,21 @@ export default function Home() {
     else load(qs);
     async function load(p: URLSearchParams) {
       try { const r = await api.get(`/catalog/establishments?${p}`); if (alive) setItems(r.items); }
-      catch { if (alive) setItems([]); } finally { if (alive) setLoading(false); }
+      catch { if (alive) { setItems([]); setLoadError(true); } } finally { if (alive) setLoading(false); }
     }
     let alive = true;
     return () => { alive = false; };
-  }, [q, category, sort, openOnly]);
+  }, [q, category, sort, openOnly, retry]);
 
-  const topRated = useMemo(() => [...items].sort((a, b) => b.ratingAvg - a.ratingAvg).slice(0, 6), [items]);
+  const topRated = useMemo(() => items.filter(e => e.ratingCount > 0).sort((a, b) => b.ratingAvg - a.ratingAvg).slice(0, 6), [items]);
 
   return <ConsumerShell>
-    <section className="relative mb-9 overflow-hidden rounded-[2rem] bg-[#f7dfc7] shadow-card">
-      <div className="absolute inset-0 sm:left-[38%]"><img src={`${import.meta.env.BASE_URL}hero-burger.jpg`} alt="" className="h-full w-full object-cover object-center" /></div>
+    <section className="relative mb-9 overflow-hidden rounded-[2rem] bg-[#f6e8d8] shadow-card">
+      <div className="absolute inset-0 sm:left-[38%]"><img src={`${import.meta.env.BASE_URL}fastdelivery-hero.jpg`} alt="" className="h-full w-full object-cover object-center" /></div>
       <div className="absolute inset-0 bg-gradient-to-r from-[#fff4e4] via-[#fff4e4]/95 to-[#fff4e4]/55 sm:via-[#fff4e4]/95 sm:to-transparent" />
       <div className="relative px-6 py-10 sm:px-10 sm:py-14 lg:px-14 lg:py-16">
-        <p className="text-[11px] font-black uppercase tracking-[.2em] text-coral">Sua cidade tem sabor · FastDelivery</p>
-        <h1 className="mt-4 max-w-lg text-4xl font-black leading-[1.08] tracking-tight text-ink sm:text-5xl lg:text-6xl">O melhor do seu dia <span className="text-coral">chega até você.</span></h1>
+        <p className="inline-flex rounded-full border border-coral/20 bg-white/75 px-3 py-2 text-[10px] font-black uppercase tracking-[.16em] text-coral">DELIVERY LOCAL · FEITO PARA SUA CIDADE</p>
+        <h1 className="mt-4 max-w-lg text-4xl font-black leading-[1.08] tracking-tight text-ink sm:text-5xl lg:text-6xl">Seu próximo pedido <span className="text-coral">começa aqui.</span></h1>
         <p className="mt-4 max-w-sm text-sm leading-relaxed text-ink/75">Descubra os sabores da sua cidade, escolha seus favoritos e acompanhe seu pedido.</p>
         <form onSubmit={e => { e.preventDefault(); setParams(search ? { q: search } : {}); }} className="mt-7 flex max-w-lg gap-2">
           <div className="relative min-w-0 flex-1"><Search size={18} className="absolute left-4 top-1/2 -translate-y-1/2 text-ink/50" />
@@ -111,12 +113,12 @@ export default function Home() {
     </div>}
 
     <section className="mb-8">
-      <SectionTitle title="Explore por categoria" subtitle="Encontre exatamente o que você apetece" />
+      <SectionTitle title="Explore por categoria" subtitle="Escolha uma categoria e descubra opções" />
       <div className="no-scrollbar flex gap-3 overflow-x-auto pb-1">
-        <button onClick={() => setCategory('')} className={`flex min-w-[86px] flex-col items-center gap-2 rounded-2xl border p-3 text-[11px] font-bold transition ${!category ? 'border-coral bg-coral/10 text-coral' : 'border-line bg-white text-ink/60'}`}>
+        <button aria-pressed={!category} onClick={() => setCategory('')} className={`flex min-w-[86px] flex-col items-center gap-2 rounded-2xl border p-3 text-[11px] font-bold transition ${!category ? 'border-coral bg-coral/10 text-coral' : 'border-line bg-white text-ink/60'}`}>
           <span className="grid h-10 w-10 place-items-center rounded-xl bg-mist text-lg">✨</span>Todos
         </button>
-        {categories.map(c => <button key={c.id} onClick={() => setCategory(category === c.id ? '' : c.id)}
+        {categories.map(c => <button key={c.id} aria-pressed={category === c.id} onClick={() => setCategory(category === c.id ? '' : c.id)}
           className={`flex min-w-[86px] flex-col items-center gap-2 rounded-2xl border p-3 text-center text-[11px] font-bold transition ${category === c.id ? 'border-coral bg-coral/10 text-coral' : 'border-line bg-white text-ink/60'}`}>
           <span className="grid h-10 w-10 place-items-center rounded-xl bg-gradient-to-br from-coral/15 to-tangerine/20 text-lg">
             {c.icon === 'pizza' ? '🍕' : c.icon === 'hamburger' ? '🍔' : c.icon === 'ice-cream' ? '🍦' : c.icon === 'cake' ? '🍰' : c.icon === 'coffee' ? '☕' : c.icon === 'sandwich' ? '🥪' : c.icon === 'soup' ? '🍲' : '🍽️'}
@@ -131,14 +133,15 @@ export default function Home() {
     </section>}
 
     <section>
-      <SectionTitle title={q ? `Resultados para “${q}”` : 'Estabelecimentos perto de você'} subtitle={VISUAL_PREVIEW ? 'O catálogo estará disponível após conectar o servidor.' : `${items.length} estabelecimento${items.length === 1 ? '' : 's'} disponível${items.length === 1 ? '' : 'is'}`}
+      <SectionTitle title={q ? `Resultados para “${q}”` : 'Explore estabelecimentos'} subtitle={VISUAL_PREVIEW ? 'O catálogo estará disponível após conectar o servidor.' : loadError ? 'Não foi possível carregar o catálogo.' : `${items.length} estabelecimento${items.length === 1 ? '' : 's'} disponível${items.length === 1 ? '' : 'is'}`}
         action={<div className="flex items-center gap-2">
-          <button onClick={() => setOpenOnly(!openOnly)} className={`flex items-center gap-1.5 rounded-xl border px-3 py-2 text-[11px] font-bold ${openOnly ? 'border-mint bg-emerald-50 text-emerald-700' : 'border-line bg-white text-ink/60'}`}><StoreIcon size={14} />Abertos</button>
-          <select value={sort} onChange={e => setSort(e.target.value)} className="rounded-xl border border-line bg-white px-3 py-2 text-[11px] font-bold outline-none">
+          <button aria-pressed={openOnly} onClick={() => setOpenOnly(!openOnly)} className={`flex items-center gap-1.5 rounded-xl border px-3 py-2 text-[11px] font-bold ${openOnly ? 'border-mint bg-emerald-50 text-emerald-700' : 'border-line bg-white text-ink/60'}`}><StoreIcon size={14} />Abertos</button>
+          <select aria-label="Ordenar estabelecimentos" value={sort} onChange={e => setSort(e.target.value)} className="rounded-xl border border-line bg-white px-3 py-2 text-[11px] font-bold outline-none">
             <option value="recommended">Recomendados</option><option value="distance">Mais próximos</option><option value="rating">Melhor avaliados</option><option value="fee">Menor taxa</option>
           </select>
         </div>} />
       {loading ? <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">{[1,2,3,4,5,6].map(i => <div key={i} className="skeleton h-64 rounded-3xl" />)}</div>
+        : loadError ? <EmptyState title="Não foi possível carregar as lojas" text="Verifique sua conexão e tente novamente. O servidor de teste pode levar alguns instantes para responder." action={<Button variant="outline" onClick={() => setRetry(v => v + 1)}>Tentar novamente</Button>} />
         : items.length === 0 ? <EmptyState icon={<SlidersHorizontal />} title={VISUAL_PREVIEW ? 'Catálogo indisponível nesta prévia' : 'Nada por aqui ainda'} text={VISUAL_PREVIEW ? 'Os estabelecimentos aparecerão quando a API estiver conectada.' : 'Tente outra busca, categoria ou desative o filtro de estabelecimentos abertos.'}
           action={<Button variant="outline" onClick={() => { setParams({}); setCategory(''); setOpenOnly(false); setSearch(''); }}>Limpar filtros</Button>} />
         : <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">{items.map(e => <StoreCard key={e.id} e={e} />)}</div>}

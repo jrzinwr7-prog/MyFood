@@ -75,7 +75,7 @@ export function StatCard({ label, value, hint, icon, tone = 'coral' }: { label: 
   </Card>;
 }
 export function SectionTitle({ title, subtitle, action }: { title: string; subtitle?: string; action?: React.ReactNode }) {
-  return <div className="mb-4 flex items-end justify-between gap-3">
+  return <div className="mb-4 flex flex-wrap items-end justify-between gap-3">
     <div><h2 className="text-lg font-extrabold tracking-tight sm:text-xl">{title}</h2>{subtitle && <p className="mt-0.5 text-xs text-ink/50">{subtitle}</p>}</div>{action}
   </div>;
 }

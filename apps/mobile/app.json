@@ -20,7 +20,8 @@
     "android": {
       "package": "com.myfood.app",
       "adaptiveIcon": {
-        "backgroundColor": "#fbf6ee"
+        "backgroundColor": "#fbf6ee",
+        "foregroundImage": "./assets/adaptive-icon.png"
       }
     },
     "web": {
@@ -38,6 +39,7 @@
       "eas": {
         "projectId": "CONFIGURE_EAS_PROJECT_ID"
       }
-    }
+    },
+    "icon": "./assets/icon.png"
   }
 }

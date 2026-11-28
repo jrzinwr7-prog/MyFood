@@ -5,9 +5,9 @@ import { useApp } from '../state/AppContext';
 import { getToken } from '../lib/api';
 
 function Logo({ compact }: { compact?: boolean }) {
-  return <Link to="/" className="flex items-center gap-2.5 shrink-0">
-    <span className="grid h-9 w-9 place-items-center rounded-xl bg-gradient-to-br from-coral to-tangerine text-lg font-black text-white shadow-lg shadow-coral/25">F</span>
-    {!compact && <span className="text-xl font-extrabold tracking-tight">Fast<span className="text-coral">Delivery</span></span>}
+  return <Link to="/" aria-label="FastDelivery, ir para início" className="flex shrink-0 items-center gap-2">
+    <img src={`${import.meta.env.BASE_URL}fastdelivery-mark.png`} alt="" className="h-11 w-11 rounded-xl object-cover" />
+    {!compact && <span className="flex flex-col leading-none text-ink"><span className="text-[19px] font-extrabold tracking-tight">Fast</span><span className="mt-0.5 font-serif text-[15px] tracking-wide">Delivery</span></span>}
   </Link>;
 }
 
@@ -16,31 +16,32 @@ export function ConsumerShell({ children }: { children: React.ReactNode }) {
   const [q, setQ] = useState(''); const navigate = useNavigate(); const loc = useLocation();
   const count = cart?.items.reduce((s, i) => s + i.quantity, 0) ?? 0;
   return <div className="min-h-screen bg-mist">
+    <a href="#conteudo" className="skip-link">Pular para o conteúdo</a>
     <header className="sticky top-0 z-30 border-b border-line/70 bg-white/90 backdrop-blur-xl">
       <div className="mx-auto flex h-16 max-w-6xl items-center gap-3 px-4 sm:px-6">
         <Logo />
         <div className="hidden flex-1 items-center md:flex">
           <form onSubmit={e => { e.preventDefault(); navigate(`/?q=${encodeURIComponent(q)}`); }} className="relative w-full max-w-md">
             <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-ink/35" size={18} />
-            <input value={q} onChange={e => setQ(e.target.value)} placeholder="Busque restaurantes ou pratos" className="h-11 w-full rounded-2xl border border-line bg-mist pl-11 pr-4 text-sm outline-none focus:border-coral" />
+            <input value={q} onChange={e => setQ(e.target.value)} aria-label="Buscar restaurantes ou pratos" placeholder="Busque restaurantes ou pratos" className="h-11 w-full rounded-2xl border border-line bg-mist pl-11 pr-4 text-sm outline-none focus:border-coral" />
           </form>
         </div>
         <div className="ml-auto flex items-center gap-1.5">
           {user?.role === 'merchant' && <Link to="/merchant" className="hidden rounded-xl px-3 py-2 text-xs font-bold text-ink/60 hover:bg-mist sm:block">Portal da loja</Link>}
           {user?.role === 'courier' && <Link to="/courier" className="hidden rounded-xl px-3 py-2 text-xs font-bold text-ink/60 hover:bg-mist sm:block">Área do entregador</Link>}
           {user?.role === 'admin' && <Link to="/admin" className="hidden rounded-xl px-3 py-2 text-xs font-bold text-ink/60 hover:bg-mist sm:block">Administração</Link>}
-          <Link to="/carrinho" className="relative flex h-10 w-10 items-center justify-center rounded-2xl bg-mist hover:bg-line">
+          <Link to="/carrinho" aria-label={`Carrinho, ${count} itens`} className="relative flex h-10 w-10 items-center justify-center rounded-2xl bg-mist hover:bg-line">
             <ShoppingBag size={19} />
             {count > 0 && <span className="absolute -right-1 -top-1 grid h-5 min-w-5 place-items-center rounded-full bg-coral px-1 text-[10px] font-black text-white">{count}</span>}
           </Link>
-          <Link to={user ? '/perfil' : '/entrar'} className="flex h-10 items-center gap-2 rounded-2xl bg-ink px-3 text-xs font-bold text-white sm:px-4">
+          <Link to={user ? '/perfil' : '/entrar'} aria-label={user ? 'Abrir perfil' : 'Entrar na conta'} className="flex h-10 items-center gap-2 rounded-2xl bg-ink px-3 text-xs font-bold text-white sm:px-4">
             <User size={16} /><span className="hidden sm:inline">{user ? user.name.split(' ')[0] : 'Entrar'}</span>
           </Link>
         </div>
       </div>
     </header>
-    <main className="mx-auto min-h-[70vh] max-w-6xl px-4 pb-28 pt-5 sm:px-6 md:pb-16">{children}</main>
-    {loc.pathname !== '/suporte-ia' && <Link to="/suporte-ia" aria-label="Abrir suporte por inteligência artificial" className="fixed bottom-20 right-4 z-40 flex items-center gap-2 rounded-full bg-ink px-4 py-3 text-xs font-extrabold text-white shadow-float transition hover:bg-coral md:bottom-6"><MessageCircle size={18} /> Suporte IA</Link>}
+    <main id="conteudo" tabIndex={-1} className="mx-auto min-h-[70vh] max-w-6xl px-4 pb-28 pt-5 sm:px-6 md:pb-16">{children}</main>
+    {loc.pathname !== '/suporte-ia' && <Link to="/suporte-ia" aria-label="Abrir suporte por inteligência artificial" className="fixed bottom-[calc(5.25rem+env(safe-area-inset-bottom))] right-3 z-20 flex h-11 w-11 items-center justify-center gap-2 rounded-full bg-ink text-xs font-extrabold text-white shadow-float transition hover:bg-coral md:bottom-6 md:right-6 md:w-auto md:px-4"><MessageCircle size={18} /><span className="hidden md:inline">Suporte IA</span></Link>}
     <nav className="fixed bottom-0 left-0 right-0 z-30 border-t border-line bg-white/95 pb-[env(safe-area-inset-bottom)] backdrop-blur-xl md:hidden">
       <div className="mx-auto flex max-w-lg items-center justify-around px-2 py-2">
         {[

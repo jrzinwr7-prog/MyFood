@@ -7,7 +7,7 @@ html { -webkit-tap-highlight-color: transparent; scroll-behavior: smooth; }
 body { @apply bg-mist text-ink font-sans antialiased; margin: 0; }
 button, input, textarea, select { font: inherit; }
 button { cursor: pointer; }
-:focus-visible { outline: 3px solid rgba(255,95,61,.45); outline-offset: 2px; }
+:focus-visible { outline: 3px solid #9d361d; outline-offset: 2px; }
 .safe-bottom { padding-bottom: calc(env(safe-area-inset-bottom, 0px) + 4.5rem); }
 .no-scrollbar::-webkit-scrollbar { display: none; }
 .no-scrollbar { scrollbar-width: none; }
@@ -16,3 +16,7 @@ button { cursor: pointer; }
 .skeleton { @apply animate-pulse bg-line/70 rounded-xl; }
 
 @media (prefers-reduced-motion: reduce) { html { scroll-behavior: auto; } *, *::before, *::after { animation-duration: 0.01ms !important; animation-iteration-count: 1 !important; transition-duration: 0.01ms !important; } .card-hover:hover { transform: none; } }
+
+.skip-link { position: fixed; left: 1rem; top: 1rem; z-index: 100; transform: translateY(-160%); background: #402920; color: white; padding: .75rem 1rem; border-radius: .75rem; font-weight: 700; }
+.skip-link:focus { transform: translateY(0); }
+html { scroll-padding-top: 5rem; }

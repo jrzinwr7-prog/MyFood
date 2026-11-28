@@ -108,21 +108,21 @@ export default function ConsumerApp({ user, onLogout }: any) {
   return <View style={styles.root}>
     <ScrollView contentContainerStyle={styles.content} refreshControl={<RefreshControl refreshing={false} onRefresh={() => { loadStores(); loadOrders(); loadConvs(); }} />}>
       {view.name === 'home' && <>
-        <View style={styles.hero}><Text style={styles.heroTitle}>O melhor da sua cidade na sua porta 🛵</Text>
+        <View style={styles.hero}><Text style={styles.heroEyebrow}>FASTDELIVERY · DELIVERY LOCAL</Text><Text style={styles.heroTitle}>Seu próximo pedido começa aqui.</Text>
           <Text style={styles.heroSub}>Descubra lojas independentes e peça em poucos toques.</Text>
           <Input placeholder="Buscar loja ou prato" value={search} onChangeText={setSearch} onSubmitEditing={loadStores} />
         </View>
         <ScrollView horizontal showsHorizontalScrollIndicator={false} style={styles.chips}>
-          <Pressable onPress={() => setCategory('')} style={[styles.chip, !category && styles.chipOn]}><Text style={styles.chipText}>Todos</Text></Pressable>
+          <Pressable onPress={() => setCategory('')} style={[styles.chip, !category && styles.chipOn]}><Text style={[styles.chipText, !category && styles.chipTextOn]}>Todos</Text></Pressable>
           {categories.map(c => <Pressable key={c.id} onPress={() => setCategory(c.id)} style={[styles.chip, category === c.id && styles.chipOn]}>
-            <Text style={styles.chipText}>{c.name}</Text></Pressable>)}
+            <Text style={[styles.chipText, category === c.id && styles.chipTextOn]}>{c.name}</Text></Pressable>)}
         </ScrollView>
         <Title>{stores.length} estabelecimentos</Title>
         {stores.map(s => <Pressable key={s.id} onPress={() => openStore(s.slug)} style={styles.storeCard}>
           <View style={styles.storeIcon}><Text style={{ fontSize: 24 }}>{s.name.charAt(0)}</Text></View>
           <View style={{ flex: 1 }}><Text style={styles.storeName}>{s.name}</Text>
             <Muted>{s.categoryName} · {s.neighborhood}</Muted>
-            <View style={{ flexDirection: 'row', gap: 8, marginTop: 6 }}>
+            <View style={{ flexDirection: 'row', flexWrap: 'wrap', gap: 8, marginTop: 6 }}>
               <Badge tone={s.isOpen ? 'green' : 'red'}>{s.isOpen ? 'Aberto' : 'Fechado'}</Badge>
               <Badge>🚴 {s.deliveryFeeCents ? brl(s.deliveryFeeCents) : 'Grátis'}</Badge>
               <Badge>★ {s.ratingAvg ? s.ratingAvg.toFixed(1) : 'Novo'}</Badge>
@@ -242,8 +242,8 @@ export default function ConsumerApp({ user, onLogout }: any) {
 }
 const styles = StyleSheet.create({ root: { flex: 1, backgroundColor: theme.mist }, content: { padding: 18, paddingBottom: 100 },
   hero: { backgroundColor: theme.ink, borderRadius: 22, padding: 20, marginBottom: 16 }, heroTitle: { color: '#fff', fontSize: 22, fontWeight: '900', lineHeight: 28 },
-  heroSub: { color: 'rgba(255,255,255,.7)', fontSize: 12, marginBottom: 14 }, chips: { marginBottom: 16 }, chip: { paddingHorizontal: 14, paddingVertical: 9, backgroundColor: '#fff', borderRadius: 14, marginRight: 8, borderWidth: 1, borderColor: theme.line },
-  chipOn: { backgroundColor: theme.coral, borderColor: theme.coral }, chipText: { fontSize: 11, fontWeight: '700', color: theme.ink },
+  heroEyebrow: { color: '#f6c78c', fontSize: 10, fontWeight: '800', letterSpacing: 1.2, marginBottom: 10 }, heroSub: { color: 'rgba(255,255,255,.85)', fontSize: 12, marginBottom: 14 }, chips: { marginBottom: 16 }, chip: { paddingHorizontal: 14, paddingVertical: 9, backgroundColor: '#fff', borderRadius: 14, marginRight: 8, borderWidth: 1, borderColor: theme.line },
+  chipOn: { backgroundColor: theme.coral, borderColor: theme.coral }, chipText: { fontSize: 11, fontWeight: '700', color: theme.ink }, chipTextOn: { color: '#fff' },
   storeCard: { flexDirection: 'row', gap: 12, backgroundColor: '#fff', borderRadius: 18, padding: 14, marginBottom: 10 },
   storeIcon: { width: 52, height: 52, borderRadius: 14, backgroundColor: '#fff2ee', alignItems: 'center', justifyContent: 'center' },
   storeName: { fontSize: 14, fontWeight: '800', color: theme.ink }, price: { color: theme.coral, fontWeight: '900', fontSize: 15, marginTop: 6 },
