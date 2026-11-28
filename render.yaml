@@ -1,0 +1,23 @@
+# Ambiente gratuito e temporário de teste, NÃO usar para dados reais.
+services:
+  - type: web
+    name: myfood-api-teste
+    runtime: node
+    plan: free
+    branch: arena/f200c915-myfood
+    buildCommand: npm ci --include=dev
+    startCommand: npm run start:api
+    healthCheckPath: /health
+    envVars:
+      - key: NODE_VERSION
+        value: 22.22.3
+      - key: NODE_ENV
+        value: production
+      - key: DATABASE_PATH
+        value: /tmp/myfood-test.db
+      - key: PUBLIC_ORIGIN
+        value: https://jrzinwr7-prog.github.io
+      - key: JWT_SECRET
+        generateValue: true
+      - key: OPENROUTER_API_KEY
+        sync: false
