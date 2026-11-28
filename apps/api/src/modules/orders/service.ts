@@ -61,6 +61,16 @@ export function transitionOrder(orderId: string, to: string, actorId: string | n
     if (reason && to !== 'cancelled') { update.push('notes=COALESCE(notes,\'\') || ?'); params.push(` | ${reason}`); }
     params.push(orderId);
     run(`UPDATE orders SET ${update.join(',')} WHERE id=?`, ...params);
+    if (to === 'cancelled' || to === 'failed') {
+      // Impede novas ofertas, retirada ou localização após o cancelamento.
+      run("UPDATE deliveries SET status='cancelled', version=version+1 WHERE order_id=? AND status NOT IN ('delivered','cancelled')", orderId);
+      const payment = get<any>('SELECT * FROM payments WHERE order_id=?', orderId);
+      if (payment?.status === 'approved' && !get('SELECT id FROM refunds WHERE payment_id=? AND status=?', payment.id, 'pending')) {
+        // Somente solicitação pendente: não representa um reembolso realizado.
+        run('INSERT INTO refunds (id,payment_id,order_id,amount_cents,reason,status,created_at) VALUES (?,?,?,?,?,?,?)',
+          uid(), payment.id, orderId, payment.amount_cents, reason ?? 'Pedido cancelado', 'pending', stamp);
+      }
+    }
 
     const actors = orderActors(orderId);
     const copy = NOTIF_COPY[to];

@@ -30,6 +30,9 @@ ordersRouter.post('/', asyncRoute(async (req, res) => {
   if (!est) throw notFound('Estabelecimento não disponível');
   const address = get<any>('SELECT * FROM addresses WHERE id=? AND user_id=?', body.addressId, req.auth!.id);
   if (!address) throw notFound('Endereço de entrega não encontrado');
+  const normalizeCity = (value: string) => value.trim().normalize('NFD').replace(/[\u0300-\u036f]/g, '').replace(/\s+/g, ' ').toLocaleLowerCase('pt-BR');
+  if (normalizeCity(address.city) !== normalizeCity(est.city) || address.state.trim().toUpperCase() !== est.state.trim().toUpperCase())
+    throw bad('A cidade e o estado do endereço devem ser os mesmos do estabelecimento.', 'delivery_city_mismatch');
   if (['credit_card', 'debit_card', 'pix'].includes(body.paymentMethod))
     throw bad('Pagamento online ainda não está disponível. Use PIX manual ou dinheiro na entrega.', 'payment_provider_not_configured');
   const cashSetting = get<{ value: string }>("SELECT value FROM app_settings WHERE key='cash_enabled'");
@@ -150,12 +153,6 @@ ordersRouter.post('/:id/cancel', asyncRoute((req, res) => {
   const isMerchant = get<any>('SELECT owner_id FROM establishments WHERE id=?', order.establishment_id)?.owner_id === req.auth!.id;
   if (!isOwner && !isMerchant && req.auth!.role !== 'admin') throw unauthorized();
   transitionOrder(order.id, 'cancelled', req.auth!.id, req.auth!.role, body.reason);
-  const payment = get<any>('SELECT * FROM payments WHERE order_id=?', order.id);
-  if (payment && ['approved', 'pending'].includes(payment.status)) {
-    run('UPDATE payments SET status=\'refunded\', updated_at=? WHERE id=?', now(), payment.id);
-    run('INSERT INTO refunds (id,payment_id,order_id,amount_cents,reason,status,created_at) VALUES (?,?,?,?,?,?,?)',
-      uid(), payment.id, order.id, payment.amount_cents, body.reason, 'pending', now());
-  }
   res.json({ ok: true });
 }));
 

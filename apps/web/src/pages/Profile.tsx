@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link, useNavigate, useSearchParams } from 'react-router-dom';
 import { ArrowRight, Bike, Download, Heart, MapPin, Package, ShieldCheck, Store, Trash2, User, X } from 'lucide-react';
 import { api } from '../lib/api';
 import { brl, cepMask } from '../lib/format';
@@ -13,7 +13,8 @@ export default function Profile() {
   const [addresses, setAddresses] = useState<any[]>([]);
   const [favorites, setFavorites] = useState<any[]>([]);
   const [orders, setOrders] = useState<any[]>([]);
-  const [tab, setTab] = useState('dados');
+  const [params] = useSearchParams();
+  const [tab, setTab] = useState(params.get('tab') === 'ajuda' ? 'ajuda' : 'dados');
   const [edit, setEdit] = useState(false);
   const [name, setName] = useState(''); const [phone, setPhone] = useState('');
   const [newAddr, setNewAddr] = useState(false);
@@ -56,7 +57,7 @@ export default function Profile() {
     try { await api.post('/auth/lgpd/delete-request', { reason: deleteReason }); setDeleteOpen(false); toast('Solicitação registrada'); } catch (e: any) { toast(e.message, 'error'); }
   }
   async function sendSupport() {
-    try { await api.post('/chat/support', support); setSupport({ subject: '', body: '' }); toast('Chamado enviado. Responderemos por e-mail.'); }
+    try { await api.post('/chat/support', support); setSupport({ subject: '', body: '' }); toast('Chamado enviado para análise.'); }
     catch (e: any) { toast(e.message, 'error'); }
   }
 

@@ -1,6 +1,7 @@
 import { BrowserRouter, HashRouter, Route, Routes, Navigate } from 'react-router-dom';
 import { AppProvider, useApp } from './state/AppContext';
 import Home from './pages/Home';
+import AiSupport from './pages/AiSupport';
 import StorePage from './pages/StorePage';
 import Cart from './pages/Cart';
 import Checkout from './pages/Checkout';
@@ -48,6 +49,7 @@ function RoutesView() {
     <Route path="/termos" element={<Terms />} />
     <Route path="/privacidade" element={<Privacy />} />
     <Route path="/ajuda" element={<Help />} />
+    <Route path="/suporte-ia" element={<AiSupport />} />
 
     <Route path="/merchant/cadastro" element={<MerchantRegister />} />
     <Route path="/merchant" element={<MerchantDashboard />} />

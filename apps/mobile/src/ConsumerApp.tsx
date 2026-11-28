@@ -2,6 +2,7 @@ import React, { useCallback, useEffect, useState } from 'react';
 import { ScrollView, StyleSheet, Text, View, Pressable, RefreshControl } from 'react-native';
 import { api, brl, shortDate, getToken } from './lib/api';
 import { theme } from './lib/theme';
+import AiSupport from './AiSupport';
 import { Badge, Button, Card, Empty, Input, Loading, Muted, Overlay, Title } from './components';
 
 const TABS = [{ key: 'home', label: 'Início', icon: '🏠' }, { key: 'orders', label: 'Pedidos', icon: '🧾' },
@@ -209,10 +210,13 @@ export default function ConsumerApp({ user, onLogout }: any) {
         </Card></Pressable>)}
       </>}
 
+      {view.name === 'aiSupport' && <><Pressable onPress={() => setView({ name: 'profile' })}><Text style={styles.back}>← Voltar</Text></Pressable><AiSupport /></>}
+
       {view.name === 'profile' && <>
         <Title>Olá, {user.name.split(' ')[0]}</Title><Muted>{user.email}</Muted>
         <Card><Title size={16}>Seus endereços</Title>{addresses.length === 0 ? <Muted>Nenhum endereço cadastrado. Cadastre pelo site.</Muted> : addresses.map(a =>
           <View key={a.id} style={styles.row}><Text>{a.label}</Text><Muted>{a.street}, {a.number}</Muted></View>)}</Card>
+        <Button variant="outline" onPress={() => setView({ name: 'aiSupport' })}>Conversar com suporte IA</Button>
         <Button variant="outline" onPress={async () => { try { const r = await api.get('/auth/lgpd/export'); alert(`Seus dados: ${Object.keys(r.data).join(', ')}. Solicite exportação completa pelo site.`); } catch (e: any) { setError(e.message); } }}>Exportar meus dados (LGPD)</Button>
         <Button variant="ghost" onPress={onLogout}>Sair da conta</Button>
       </>}

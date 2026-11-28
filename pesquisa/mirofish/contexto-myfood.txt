@@ -1,0 +1,29 @@
+CONTEXTO PARA SIMULAÇÃO EXPLORATÓRIA — PROJETO DE DELIVERY LOCAL
+Versão: 26/11/2026. Nome definitivo ainda não escolhido; MyFood é nome provisório do projeto.
+
+OBJETIVO DO PROJETO
+Investigar a possível aceitação de uma plataforma de delivery que conecte consumidores, estabelecimentos independentes e entregadores. A primeira cidade considerada na configuração é Lapão, Bahia; a plataforma pretende permitir a configuração de outras cidades posteriormente. Essa informação não demonstra que haja demanda ou parceiros disponíveis.
+
+SITUAÇÃO ATUAL VERIFICADA
+- Existe uma prévia visual pública em https://jrzinwr7-prog.github.io/MyFood/. Ela não está conectada a uma API de produção. Cadastros, pedidos e pagamentos reais não estão disponíveis na prévia.
+- Existe código em desenvolvimento para site, painéis, API própria e aplicativos Android/iOS. Os aplicativos não foram publicados nas lojas.
+- A API tem base local com fluxos de cadastro e pedido, aprovação de lojas e entregadores, entrega, chat, comissão e confirmação manual. Há testes automatizados locais, mas isso não prova prontidão para operação comercial.
+- Pagamentos online, webhooks e estornos estão bloqueados enquanto não forem concluídos e homologados. Split automático não foi concluído. Mapas/geocodificação, push e upload de imagens precisam de implementação e testes adicionais.
+- Nenhum nome definitivo, preço, comissão comercial, taxa de entrega ou prazo de entrega foi decidido. Não interpretar valores de exemplo de testes como preços ou condições reais.
+
+PERGUNTAS PARA EXPLORAR
+1. Quais fatores poderiam levar consumidores a experimentar ou evitar um delivery local? Como confiança, taxa de entrega, formas de pagamento, horários e variedade podem influenciar?
+2. Quais obstáculos e incentivos poderiam afetar a participação de pequenos estabelecimentos? Explore comissões, prazo de repasse, atendimento e facilidade de uso sem inventar valores.
+3. Que condições poderiam atrair ou afastar entregadores? Explore remuneração, segurança, transparência, suporte e disponibilidade de pedidos sem presumir ganhos.
+4. Quais hipóteses se alteram se a operação começar apenas no site, com pagamento manual e área limitada? Compare com uma hipótese futura que tenha aplicativo e pagamentos online, deixando claro que estes ainda não foram lançados.
+5. Quais perguntas devem ser feitas a clientes, lojas e entregadores reais antes de decidir se o negócio é viável?
+
+REGRAS DE INTERPRETAÇÃO
+- Não alegar que os agentes sejam moradores reais de Lapão ou que seus perfis representem estatisticamente a população local.
+- Não inventar pesquisas, empresas parceiras, concorrentes, usuários, taxas, tamanho de mercado ou resultados históricos.
+- Não concluir que o produto funcionará ou obterá um percentual real de adesão, lucro ou demanda. Não apresentar percentuais da simulação como pesquisa de opinião.
+- Distinguir fatos fornecidos, suposições geradas e dúvidas abertas. Apontar riscos, informações ausentes, ideias contrárias e alternativas.
+- Responder em português do Brasil e propor perguntas e experimentos que possam ser validados com pessoas reais.
+- Não incluir dados pessoais, senhas, chaves ou dados financeiros reais.
+
+NOTA: este arquivo é uma entrada para possível simulação. Nenhuma simulação MiroFish foi executada e nenhum resultado de agentes foi obtido nesta preparação.

@@ -19,13 +19,14 @@ export function Terms() { return <Doc title="Termos de uso">
 export function Privacy() { return <Doc title="Política de privacidade e LGPD">
   <p>O MyFood atua como controlador dos dados cadastrais e como operador de dados de pedidos conforme a Lei nº 13.709/2018 (LGPD).</p>
   <h2 className="text-lg font-extrabold text-ink">Dados coletados</h2><p>Nome, e-mail, telefone, endereços de entrega, documentos de estabelecimentos/entregadores, histórico de pedidos, mensagens, avaliações e registros de auditoria. Não armazenamos números completos de cartões: dados de pagamento são tokenizados pelo provedor.</p>
-  <h2 className="text-lg font-extrabold text-ink">Finalidades</h2><p>Execução de pedidos,沟通 entre participantes, prevenção à fraude, cumprimento de obrigações legais, cálculo e repasse financeiro, suporte e melhoria da experiência.</p>
+  <h2 className="text-lg font-extrabold text-ink">Finalidades</h2><p>Execução de pedidos, comunicação entre participantes, prevenção à fraude, cumprimento de obrigações legais, cálculo e repasse financeiro, suporte e melhoria da experiência.</p>
   <h2 className="text-lg font-extrabold text-ink">Compartilhamento</h2><p>Dados necessários são compartilhados com o estabelecimento e o entregador envolvidos no pedido. Endereços completos de consumidores não são exibidos publicamente. Localização em tempo real é compartilhada apenas durante a entrega e mediante ação explícita do entregador.</p>
   <h2 className="text-lg font-extrabold text-ink">Seus direitos</h2><p>Você pode solicitar confirmação de tratamento, acesso, correção, portabilidade, anonimização ou exclusão. No perfil é possível exportar seus dados e registrar solicitação de exclusão. O controlador responderá conforme prazos legais.</p>
   <h2 className="text-lg font-extrabold text-ink">Segurança e retenção</h2><p>Senhas são armazenadas com hash bcrypt, acesso é segmentado por perfil, rotas são protegidas e ações sensíveis geram logs de auditoria. Dados são retidos pelo tempo necessário às finalidades e obrigações fiscais.</p>
   <p className="mt-4">Solicitações: <Link className="text-coral underline" to="/perfil">área do perfil</Link>.</p>
 </Doc>; }
 export function Help() { return <Doc title="Central de ajuda">
+  <p><Link className="font-bold text-coral underline" to="/suporte-ia">Conversar com o assistente virtual</Link></p>
   <h2 className="text-lg font-extrabold text-ink">Como faço um pedido?</h2><p>Escolha um estabelecimento, monte seu pedido, informe o endereço, selecione a forma de pagamento e confirme. Acompanhe cada etapa na tela do pedido.</p>
   <h2 className="text-lg font-extrabold text-ink">O que significa pagamento pendente?</h2><p>Quando não há provedor de pagamento online configurado, PIX manual e dinheiro na entrega ficam pendentes até o estabelecimento confirmar o recebimento. Nenhum valor é debitado automaticamente nesses modos.</p>
   <h2 className="text-lg font-extrabold text-ink">Como virar estabelecimento ou entregador?</h2><p>Use os links de cadastro na página inicial. Seu cadastro será analisado pelo administrador antes de começar a operar.</p>

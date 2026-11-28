@@ -2,6 +2,7 @@ import { useCallback, useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { AlertCircle, Bike, CheckCircle2, CircleDollarSign, MapPin, Power } from 'lucide-react';
 import { api } from '../../lib/api';
+import { currentLocation } from '../../lib/location';
 import { brl, dt } from '../../lib/format';
 import { useRealtime } from '../../lib/realtime';
 import { useApp } from '../../state/AppContext';
@@ -21,8 +22,9 @@ export default function CourierDashboard() {
   useEffect(() => { load(); const t = setInterval(load, 10000); return () => clearInterval(t); }, [load]);
   useRealtime((event) => { if (event === 'delivery:offer' || event === 'delivery:updated' || event === 'order:updated') load(); });
   async function toggleOnline() {
-    try { await api.patch('/couriers/me', { online: !me.courier.online,
-      latitude: -12.555, longitude: -41.55 }); load(); toast(me.courier.online ? 'Você está offline' : 'Você está online!'); }
+    try { const online = !me.courier.online;
+      const position = online ? await currentLocation() : {};
+      await api.patch('/couriers/me', { online, ...position }); load(); toast(me.courier.online ? 'Você está offline' : 'Você está online!'); }
     catch (e: any) { toast(e.message, 'error'); }
   }
   async function accept(id: string) {

@@ -6,12 +6,38 @@
     "orientation": "portrait",
     "userInterfaceStyle": "light",
     "scheme": "myfood",
-    "splash": { "backgroundColor": "#101b2d", "resizeMode": "contain" },
-    "assetBundlePatterns": ["**/*"],
-    "ios": { "supportsTablet": true, "bundleIdentifier": "com.myfood.app" },
-    "android": { "package": "com.myfood.app", "adaptiveIcon": { "backgroundColor": "#101b2d" } },
-    "web": { "bundler": "metro" },
-    "plugins": [],
-    "extra": { "eas": { "projectId": "CONFIGURE_EAS_PROJECT_ID" } }
+    "splash": {
+      "backgroundColor": "#101b2d",
+      "resizeMode": "contain"
+    },
+    "assetBundlePatterns": [
+      "**/*"
+    ],
+    "ios": {
+      "supportsTablet": true,
+      "bundleIdentifier": "com.myfood.app"
+    },
+    "android": {
+      "package": "com.myfood.app",
+      "adaptiveIcon": {
+        "backgroundColor": "#101b2d"
+      }
+    },
+    "web": {
+      "bundler": "metro"
+    },
+    "plugins": [
+      [
+        "expo-location",
+        {
+          "locationWhenInUsePermission": "Permita que o MyFood use sua localização para conectar você às entregas e compartilhá-la durante uma entrega ativa."
+        }
+      ]
+    ],
+    "extra": {
+      "eas": {
+        "projectId": "CONFIGURE_EAS_PROJECT_ID"
+      }
+    }
   }
 }

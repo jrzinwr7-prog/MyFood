@@ -9,6 +9,7 @@ import { productsRouter } from './modules/products/routes.js';
 import { couriersRouter } from './modules/couriers/routes.js';
 import { adminRouter } from './modules/admin/routes.js';
 import { chatRouter } from './modules/chat/routes.js';
+import { aiSupportRouter } from './modules/ai-support/routes.js';
 import { paymentsRouter, webhookRouter } from './modules/payments/routes.js';
 import { errorHandler } from './core/errors.js';
 import { config } from './core/config.js';
@@ -59,6 +60,7 @@ export function createApp() {
   app.use('/api/couriers', couriersRouter);
   app.use('/api/admin', adminRouter);
   app.use('/api/chat', chatRouter);
+  app.use('/api/ai-support', aiSupportRouter);
   app.use('/api/payments', paymentsRouter);
 
   app.use('/api', (_req, res) => res.status(404).json({ error: 'Endpoint não encontrado', code: 'not_found' }));

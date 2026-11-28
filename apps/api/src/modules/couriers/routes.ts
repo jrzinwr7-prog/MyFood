@@ -37,8 +37,10 @@ couriersRouter.patch('/me', asyncRoute((req, res) => {
 couriersRouter.get('/offers', asyncRoute((req, res) => {
   const c = myCourier(req.auth!.id);
   const offers = all<any>(`SELECT d.*, o.status order_status, o.created_at order_date, e.name establishment_name,
-    e.street pickup_street, e.number pickup_number, e.neighborhood pickup_neighborhood, e.latitude pickup_lat, e.longitude pickup_lng
+    e.street pickup_street, e.number pickup_number, e.neighborhood pickup_neighborhood, e.latitude pickup_lat, e.longitude pickup_lng,
+    a.neighborhood dest_neighborhood, a.city dest_city, a.state dest_state
     FROM deliveries d JOIN orders o ON o.id=d.order_id JOIN establishments e ON e.id=o.establishment_id
+    LEFT JOIN addresses a ON a.id=o.address_id
     WHERE d.courier_id IS NULL AND d.status IN ('offered','awaiting_courier') AND o.status='awaiting_courier'
     ORDER BY d.offered_at DESC LIMIT 50`)
     .map(d => ({ ...d,
@@ -54,10 +56,11 @@ couriersRouter.post('/offers/:id/accept', asyncRoute((req, res) => {
   const delivery = get<any>('SELECT * FROM deliveries WHERE id=?', req.params.id);
   if (!delivery) throw notFound('Solicitação não encontrada');
   const accepted = tx(() => {
+    const order = get<any>('SELECT status FROM orders WHERE id=?', delivery.order_id);
+    if (!order || order.status !== 'awaiting_courier') throw conflict('Pedido não está disponível para entrega');
     const result = run(`UPDATE deliveries SET courier_id=?, status='accepted', accepted_at=?, version=version+1
-      WHERE id=? AND courier_id IS NULL AND status IN ('offered','awaiting_courier','not_requested')`, c.id, now(), delivery.id);
+      WHERE id=? AND courier_id IS NULL AND status IN ('offered','awaiting_courier')`, c.id, now(), delivery.id);
     if (!result.changes) throw conflict('Entrega já foi designada a outro entregador');
-    const order = get<any>('SELECT status FROM orders WHERE id=?', delivery.order_id)!;
     if (order.status === 'awaiting_courier') transitionOrder(delivery.order_id, 'courier_to_store', req.auth!.id, 'courier');
     const convId = uid('cnv_');
     const actors = orderActors(delivery.order_id);
@@ -88,8 +91,8 @@ couriersRouter.post('/offers/:id/reject', asyncRoute((req, res) => {
 couriersRouter.get('/deliveries', asyncRoute((req, res) => {
   const c = myCourier(req.auth!.id);
   const items = all<any>(`SELECT d.*, o.status order_status, o.total_cents, e.name establishment_name, e.street pickup_street,
-    e.number pickup_number, e.neighborhood pickup_neighborhood, a.street dest_street, a.number dest_number,
-    a.neighborhood dest_neighborhood, a.city dest_city, a.latitude dest_lat, a.longitude dest_lng
+    e.number pickup_number, e.neighborhood pickup_neighborhood, e.city pickup_city, e.state pickup_state, e.latitude pickup_lat, e.longitude pickup_lng, a.street dest_street, a.number dest_number,
+    a.neighborhood dest_neighborhood, a.city dest_city, a.state dest_state, a.latitude dest_lat, a.longitude dest_lng
     FROM deliveries d JOIN orders o ON o.id=d.order_id JOIN establishments e ON e.id=o.establishment_id
     LEFT JOIN addresses a ON a.id=o.address_id WHERE d.courier_id=? ORDER BY d.created_at DESC LIMIT 100`, c.id);
   res.json({ items });

@@ -45,3 +45,7 @@ Substitua `CONFIGURE_EAS_PROJECT_ID` em `app.json` pelo ID do projeto Expo. Para
 ## Telas incluídas
 
 Consumidor: login/cadastro, início com busca/categorias, loja e produtos com adicionais, carrinho, checkout, acompanhamento, histórico, conversas, perfil/LGPD. Entregador: cadastro, online/offline, solicitações, aceite atômico, retirada/entrega, localização e ganhos. Gestão de lojas e administração são web (painéis responsivos).
+
+## Localização do entregador
+
+O app solicita permissão de localização em primeiro plano e obtém uma leitura real ao entrar online ou tocar em compartilhar durante a entrega. Não implementa rastreamento contínuo nem segundo plano. Para navegação, botões abrem Google Maps com o endereço após aceite e informam o compartilhamento. Precisam ser testados em aparelhos físicos; a exportação do bundle não valida GPS, permissões ou navegação.

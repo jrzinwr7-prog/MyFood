@@ -40,6 +40,7 @@ export function ConsumerShell({ children }: { children: React.ReactNode }) {
       </div>
     </header>
     <main className="mx-auto min-h-[70vh] max-w-6xl px-4 pb-28 pt-5 sm:px-6 md:pb-16">{children}</main>
+    {loc.pathname !== '/suporte-ia' && <Link to="/suporte-ia" aria-label="Abrir suporte por inteligência artificial" className="fixed bottom-20 right-4 z-40 flex items-center gap-2 rounded-full bg-ink px-4 py-3 text-xs font-extrabold text-white shadow-float transition hover:bg-coral md:bottom-6"><MessageCircle size={18} /> Suporte IA</Link>}
     <nav className="fixed bottom-0 left-0 right-0 z-30 border-t border-line bg-white/95 pb-[env(safe-area-inset-bottom)] backdrop-blur-xl md:hidden">
       <div className="mx-auto flex max-w-lg items-center justify-around px-2 py-2">
         {[
@@ -52,7 +53,7 @@ export function ConsumerShell({ children }: { children: React.ReactNode }) {
     <footer className="hidden border-t border-line bg-white py-8 md:block">
       <div className="mx-auto flex max-w-6xl flex-wrap items-center justify-between gap-5 px-6 text-xs text-ink/50">
         <div><Logo /> <p className="mt-2">Delivery local conectando você ao melhor da sua cidade.</p></div>
-        <div className="flex gap-6"><Link to="/termos">Termos de uso</Link><Link to="/privacidade">Privacidade (LGPD)</Link><Link to="/ajuda">Ajuda</Link></div>
+        <div className="flex gap-6"><Link to="/termos">Termos de uso</Link><Link to="/privacidade">Privacidade (LGPD)</Link><Link to="/ajuda">Ajuda</Link><Link to="/suporte-ia">Suporte IA</Link></div>
         <p>© {new Date().getFullYear()} MyFood</p>
       </div>
     </footer>

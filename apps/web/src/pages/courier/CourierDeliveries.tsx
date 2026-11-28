@@ -1,6 +1,7 @@
 import { useCallback, useEffect, useState } from 'react';
 import { Bike, CheckCircle2, MapPin, Navigation, PackageCheck } from 'lucide-react';
 import { api } from '../../lib/api';
+import { currentLocation } from '../../lib/location';
 import { brl, dt } from '../../lib/format';
 import { useRealtime } from '../../lib/realtime';
 import { useApp } from '../../state/AppContext';
@@ -13,7 +14,8 @@ export default function CourierDeliveries() {
   useEffect(() => { load(); const t = setInterval(load, 8000); return () => clearInterval(t); }, [load]);
   useRealtime((event) => { if (event === 'delivery:updated' || event === 'order:updated') load(); });
   async function act(id: string, action: string) {
-    try { await api.post(`/couriers/deliveries/${id}/${action}`, action === 'location' ? { latitude: -12.556, longitude: -41.551 } : {});
+    try { const body = action === 'location' ? await currentLocation() : {};
+      await api.post(`/couriers/deliveries/${id}/${action}`, body);
       toast('Status atualizado'); load(); } catch (e: any) { toast(e.message, 'error'); }
   }
   return <DashShell role="courier" title="Minhas entregas">
@@ -25,6 +27,11 @@ export default function CourierDeliveries() {
           <p className="flex gap-2"><MapPin size={14} className="shrink-0 text-coral" /><span><b>Retirada:</b> {d.pickup_street}, {d.pickup_number}, {d.pickup_neighborhood}</span></p>
           <p className="flex gap-2"><Navigation size={14} className="shrink-0 text-coral" /><span><b>Entrega:</b> {d.dest_street}, {d.dest_number}, {d.dest_neighborhood} — {d.dest_city}</span></p>
         </div>
+        {['accepted', 'picked_up', 'on_the_way'].includes(d.status) && <div className="mt-3 flex flex-wrap gap-3 text-xs font-bold text-coral">
+          <a target="_blank" rel="noopener noreferrer" href={`https://www.google.com/maps/dir/?api=1&destination=${encodeURIComponent([d.pickup_street, d.pickup_number, d.pickup_neighborhood, d.pickup_city, d.pickup_state].filter(Boolean).join(', '))}`}>Abrir rota de retirada no Google Maps</a>
+          <a target="_blank" rel="noopener noreferrer" href={`https://www.google.com/maps/dir/?api=1&destination=${encodeURIComponent([d.dest_street, d.dest_number, d.dest_neighborhood, d.dest_city, d.dest_state].filter(Boolean).join(', '))}`}>Abrir rota de entrega no Google Maps</a>
+          <span className="w-full text-ink/50">O endereço será enviado ao Google Maps ao abrir a rota.</span>
+        </div>}
         {d.status === 'accepted' && <div className="mt-4 flex flex-wrap gap-2"><Button size="sm" onClick={() => act(d.id, 'picked')}><PackageCheck size={14} />Confirmar retirada</Button>
           <Button size="sm" variant="outline" onClick={() => act(d.id, 'location')}>Compartilhar localização</Button></div>}
         {d.status === 'picked_up' && <div className="mt-4 flex flex-wrap gap-2"><Button size="sm" onClick={() => act(d.id, 'depart')}><Navigation size={14} />Sai para entrega</Button>

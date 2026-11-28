@@ -1,11 +1,13 @@
 import React, { useCallback, useEffect, useState } from 'react';
-import { ScrollView, StyleSheet, Text, View, Pressable, RefreshControl } from 'react-native';
-import { api, brl, shortDate, getToken } from './lib/api';
+import { ScrollView, StyleSheet, Text, View, Pressable, RefreshControl, Linking } from 'react-native';
+import * as Location from 'expo-location';
+import { api, brl, shortDate, getToken, API_URL } from './lib/api';
 import { theme } from './lib/theme';
+import AiSupport from './AiSupport';
 import { Badge, Button, Card, Empty, Loading, Muted, Title } from './components';
 
 const TABS = [{ key: 'home', label: 'Painel', icon: '🏠' }, { key: 'offers', label: 'Solicitações', icon: '📍' },
-  { key: 'deliveries', label: 'Entregas', icon: '🚴' }, { key: 'earnings', label: 'Ganhos', icon: '💰' }];
+  { key: 'deliveries', label: 'Entregas', icon: '🚴' }, { key: 'earnings', label: 'Ganhos', icon: '💰' }, { key: 'support', label: 'Suporte', icon: '💬' }];
 
 export default function CourierApp({ user, onLogout }: any) {
   const [tab, setTab] = useState('home'); const [me, setMe] = useState<any>(null);
@@ -17,18 +19,34 @@ export default function CourierApp({ user, onLogout }: any) {
   }, []);
   useEffect(() => { load(); const t = setInterval(load, 10000); return () => clearInterval(t); }, [load]);
   useEffect(() => {
-    const token = getToken(); if (!token) return;
-    const ws = new WebSocket(`ws://${(process.env.EXPO_PUBLIC_WS_HOST ?? '192.168.1.10:4000')}/ws?token=${token}`);
-    ws.onmessage = () => load();
-    return () => ws.close();
+    let ws: WebSocket | null = null; let closed = false;
+    getToken().then(token => {
+      if (!token || closed) return;
+      const url = new URL(API_URL); url.protocol = url.protocol === 'https:' ? 'wss:' : 'ws:';
+      ws = new WebSocket(`${url.origin}/ws?token=${encodeURIComponent(token)}`);
+      ws.onmessage = () => load();
+    });
+    return () => { closed = true; ws?.close(); };
   }, [load]);
+  async function currentLocation() {
+    const permission = await Location.requestForegroundPermissionsAsync();
+    if (permission.status !== 'granted') throw new Error('Permita a localização para usar o GPS nas entregas.');
+    const pos = await Location.getCurrentPositionAsync({ accuracy: Location.Accuracy.Balanced });
+    return { latitude: pos.coords.latitude, longitude: pos.coords.longitude };
+  }
+  async function navigateTo(parts: (string | null | undefined)[]) {
+    const destination = parts.filter(Boolean).join(', ');
+    if (!destination) { setError('Endereço indisponível para navegação.'); return; }
+    try { await Linking.openURL(`https://www.google.com/maps/dir/?api=1&destination=${encodeURIComponent(destination)}`); }
+    catch { setError('Não foi possível abrir o mapa neste aparelho.'); }
+  }
   async function toggleOnline() {
-    setBusy(true); try { await api.patch('/couriers/me', { online: !me.courier.online, latitude: -12.555, longitude: -41.55 }); await load(); }
+    setBusy(true); try { const online = !me.courier.online; const coords = online ? await currentLocation() : {}; await api.patch('/couriers/me', { online, ...coords }); await load(); }
     catch (e: any) { setError(e.message); } finally { setBusy(false); }
   }
   async function accept(id: string) { try { await api.post(`/couriers/offers/${id}/accept`, {}); setError(''); load(); } catch (e: any) { setError(e.message); load(); } }
   async function act(d: any, action: string) {
-    try { await api.post(`/couriers/deliveries/${d.id}/${action}`, action === 'location' ? { latitude: -12.556, longitude: -41.551 } : {}); load(); }
+    try { const body = action === 'location' ? await currentLocation() : {}; await api.post(`/couriers/deliveries/${d.id}/${action}`, body); load(); }
     catch (e: any) { setError(e.message); }
   }
   if (!me) return <Loading label="Carregando painel do entregador…" />;
@@ -57,7 +75,9 @@ export default function CourierApp({ user, onLogout }: any) {
         {offers.length === 0 ? <Empty title="Nada por enquanto" text="Novas ofertas aparecem automaticamente." /> : offers.map(o => <Card key={o.id}>
           <View style={styles.row}><Text style={styles.storeName}>{o.establishment_name}</Text><Text style={styles.price}>{brl(o.fee_cents)}</Text></View>
           <Muted>Retirada: {o.pickup_street}, {o.pickup_number} — {o.pickup_neighborhood}</Muted>
-          {o.distanceKm != null && <Muted>Distância: {o.distanceKm} km</Muted>}
+          <Muted>Região da entrega: {o.dest_neighborhood}, {o.dest_city}/{o.dest_state}</Muted>
+          <Muted>Valor exibido é a taxa bruta; não representa necessariamente o ganho líquido.</Muted>
+          {o.distanceKm != null && <Muted>Distância em linha reta até a loja: {o.distanceKm} km</Muted>}
           <Button onPress={() => accept(o.id)}>Aceitar entrega</Button>
         </Card>)}
       </>}
@@ -69,12 +89,19 @@ export default function CourierApp({ user, onLogout }: any) {
           <Muted>Retirada: {d.pickup_street}, {d.pickup_number}</Muted>
           <Muted>Entrega: {d.dest_street}, {d.dest_number} — {d.dest_neighborhood}</Muted>
           <Muted>{shortDate(d.created_at)} · {brl(d.fee_cents)}</Muted>
+          {['accepted', 'picked_up', 'on_the_way'].includes(d.status) && <View>
+            <Button variant="outline" onPress={() => navigateTo([d.pickup_street, d.pickup_number, d.pickup_neighborhood, d.pickup_city, d.pickup_state])}>Rota até a retirada · Google Maps</Button>
+            <Button variant="outline" onPress={() => navigateTo([d.dest_street, d.dest_number, d.dest_neighborhood, d.dest_city, d.dest_state])}>Rota até a entrega · Google Maps</Button>
+            <Muted>Ao abrir a rota, o endereço será compartilhado com o Google Maps.</Muted>
+          </View>}
           {d.status === 'accepted' && <View style={styles.actions}><Button style={styles.smallBtn} onPress={() => act(d, 'picked')}>Confirmar retirada</Button>
             <Button variant="outline" style={styles.smallBtn} onPress={() => act(d, 'location')}>Compartilhar local</Button></View>}
-          {d.status === 'picked_up' && <Button onPress={() => act(d, 'depart')}>Sair para entrega</Button>}
-          {d.status === 'on_the_way' && <Button onPress={() => act(d, 'delivered')}>Confirmar entrega</Button>}
+          {d.status === 'picked_up' && <><Button onPress={() => act(d, 'depart')}>Sair para entrega</Button><Button variant="outline" onPress={() => act(d, 'location')}>Atualizar localização</Button></>}
+          {d.status === 'on_the_way' && <><Button onPress={() => act(d, 'delivered')}>Confirmar entrega</Button><Button variant="outline" onPress={() => act(d, 'location')}>Atualizar localização</Button></>}
         </Card>)}
       </>}
+
+      {tab === 'support' && <AiSupport />}
 
       {tab === 'earnings' && <>
         <Title>Ganhos e repasses</Title>

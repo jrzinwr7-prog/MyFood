@@ -1,3 +1,4 @@
+import 'dotenv/config';
 import path from 'node:path';
 
 function int(value: string | undefined, fallback: number) { const n = Number(value); return Number.isFinite(n) && n > 0 ? n : fallback; }
