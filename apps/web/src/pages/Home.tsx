@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useState } from 'react';
 import { Link, useSearchParams } from 'react-router-dom';
-import { Search, Star, Bike, Clock3, MapPin, SlidersHorizontal, Heart, ArrowRight, Store as StoreIcon, X } from 'lucide-react';
+import { Search, Star, Bike, Clock3, MapPin, SlidersHorizontal, Heart, ArrowRight, Store as StoreIcon, X, LayoutGrid, Pizza, Coffee, IceCreamBowl, CakeSlice, Sandwich, Soup, UtensilsCrossed } from 'lucide-react';
 import { api, VISUAL_PREVIEW } from '../lib/api';
 import { brl } from '../lib/format';
 import { useApp } from '../state/AppContext';
@@ -97,12 +97,12 @@ export default function Home() {
       <SectionTitle title="Explore por categoria" subtitle="Escolha uma categoria e descubra opções" />
       <div className="no-scrollbar flex gap-3 overflow-x-auto pb-1">
         <button aria-pressed={!category} onClick={() => setCategory('')} className={`category-tile ${!category ? 'is-selected' : ''}`}>
-          <span className="category-tile__icon">✨</span>Todos
+          <span className="category-tile__icon"><LayoutGrid size={22} strokeWidth={1.7} /></span>Todos
         </button>
         {categories.map(c => <button key={c.id} aria-pressed={category === c.id} onClick={() => setCategory(category === c.id ? '' : c.id)}
           className={`category-tile ${category === c.id ? 'is-selected' : ''}`}>
           <span className="category-tile__icon">
-            {c.icon === 'pizza' ? '🍕' : c.icon === 'hamburger' ? '🍔' : c.icon === 'ice-cream' ? '🍦' : c.icon === 'cake' ? '🍰' : c.icon === 'coffee' ? '☕' : c.icon === 'sandwich' ? '🥪' : c.icon === 'soup' ? '🍲' : '🍽️'}
+            {c.icon === 'pizza' ? <Pizza size={22}/> : c.icon === 'ice-cream' ? <IceCreamBowl size={22}/> : c.icon === 'cake' ? <CakeSlice size={22}/> : c.icon === 'coffee' ? <Coffee size={22}/> : c.icon === 'sandwich' ? <Sandwich size={22}/> : c.icon === 'soup' ? <Soup size={22}/> : <UtensilsCrossed size={22}/>}
           </span>{c.name.replace('arias', 'aria').replace('erias', 'eria')}
         </button>)}
       </div>
@@ -132,7 +132,7 @@ export default function Home() {
       <SectionTitle title="Mais bem avaliados" subtitle="A escolha da vizinhança" />
       <div className="no-scrollbar flex gap-4 overflow-x-auto pb-2">{topRated.map(e => <Link key={e.id} to={`/loja/${e.slug}`} className="flex min-w-[230px] items-center gap-3 rounded-2xl border border-line bg-white p-3 shadow-card">
         <span className="grid h-12 w-12 shrink-0 place-items-center overflow-hidden rounded-xl bg-coral/10 text-lg font-black text-coral">{e.logoUrl ? <img src={e.logoUrl} className="h-full w-full object-cover" alt="" /> : e.name[0]}</span>
-        <div className="min-w-0"><p className="truncate text-xs font-extrabold">{e.name}</p><p className="mt-1 text-[11px] text-ink/50">★ {e.ratingAvg.toFixed(1)} · {e.ratingCount} avaliações</p></div>
+        <div className="min-w-0"><p className="truncate text-xs font-extrabold">{e.name}</p><p className="mt-1 text-[11px] text-ink/50"><Star size={12} fill="currentColor" className="inline text-tangerine" /> {e.ratingAvg.toFixed(1)} · {e.ratingCount} avaliações</p></div>
       </Link>)}</div>
     </section>}
   </ConsumerShell>;

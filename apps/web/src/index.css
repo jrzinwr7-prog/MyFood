@@ -58,3 +58,30 @@ html { scroll-padding-top: 5rem; }
 @media (prefers-reduced-motion:no-preference) { .home-hero__content > * { animation:hero-enter .7s cubic-bezier(.2,.7,.2,1) both; } .home-hero__content > *:nth-child(2) { animation-delay:.06s; } .home-hero__content > *:nth-child(3) { animation-delay:.12s; } .home-hero__content > *:nth-child(4) { animation-delay:.18s; } .home-hero__content > *:nth-child(5) { animation-delay:.24s; } @keyframes hero-enter { from { opacity:0; transform:translateY(14px); } to { opacity:1; transform:translateY(0); } } }
 @media (max-width:700px) { .home-hero { grid-template-columns:1fr; border-radius:25px; margin-bottom:34px; } .home-hero__content { padding:30px 23px 25px; } .home-hero h1 { font-size:clamp(2.35rem,10vw,3.4rem); } .home-hero__image { min-height:190px; } .home-hero__image-label { right:15px; bottom:15px; padding:12px 14px; } .home-hero__image-label b { font-size:16px; } .home-search button { padding:0 13px; } .home-search button svg { display:none; } }
 @media (prefers-reduced-motion:reduce) { .home-hero:hover .home-hero__image > img, .store-card:hover .store-card__visual > img, .category-tile:hover { transform:none; } }
+/* Linguagem compartilhada por consumidor, estabelecimentos, entregadores e administração. */
+.ui-card { box-shadow:0 12px 38px -30px rgba(67,38,23,.38); border-color:#eee3d9; }
+.ui-card h2,.ui-card h3 { color:#38251c; letter-spacing:-.025em; }
+.ui-empty { background:linear-gradient(145deg,#fff,#fdf8f2); box-shadow:0 14px 38px -32px rgba(67,38,23,.35); }
+.ui-empty > div:first-child { background:#f8e9df; border:1px solid #f0d9cb; }
+.ui-modal { box-shadow:0 28px 80px -25px rgba(36,21,14,.45); }
+.ui-button { letter-spacing:-.01em; } .ui-button:not(:disabled):hover { filter:saturate(1.05); box-shadow:0 10px 24px -18px rgba(72,36,20,.5); }
+.dashboard-sidebar { background:#fffdfb; box-shadow:14px 0 40px -38px rgba(63,39,25,.3); }
+.dashboard-sidebar nav a { min-height:44px; transition:background-color .2s,color .2s,transform .2s; }
+.dashboard-sidebar nav a:hover { transform:translateX(3px); }
+.dashboard-sidebar nav a[aria-current="page"] { background:#f8e9df; box-shadow:inset 3px 0 #a83c24; }
+.dashboard-header { background:rgba(255,253,251,.95); box-shadow:0 8px 28px -28px rgba(63,39,25,.35); }
+main h1 { letter-spacing:-.04em; }
+input,textarea,select { transition:border-color .2s,box-shadow .2s,background-color .2s; }
+input:focus-visible,textarea:focus-visible,select:focus-visible { outline:2px solid #9d361d; outline-offset:2px; }
+@media (prefers-reduced-motion:reduce) { .dashboard-sidebar nav a:hover { transform:none; } }
+.consumer-main > h1,.dashboard-main > h1 { font-weight:800; color:#37241b; }
+.consumer-main > h1 { font-size:clamp(1.7rem,3vw,2.2rem); line-height:1.15; }
+.ui-field { background:#fffdfa; border-color:#e6d8cb; min-height:48px; }
+.ui-field:hover { border-color:#c9ad9a; }
+.ui-field:focus { background:#fff; border-color:#a43c24; box-shadow:0 0 0 4px rgba(164,60,36,.08); }
+.dashboard-main { padding-top:1.75rem; }
+.dashboard-main .ui-card { border-radius:22px; }
+.dashboard-main table { border-collapse:separate; border-spacing:0; width:100%; }
+.dashboard-main th { color:#71594b; font-weight:800; letter-spacing:.03em; }
+.dashboard-main td { border-color:#f1e8e0; }
+@media (max-width:640px) { .dashboard-main { padding-top:1.25rem; } .consumer-main { padding-top:1rem; } }

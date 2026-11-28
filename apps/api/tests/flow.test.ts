@@ -126,6 +126,8 @@ describe('Fluxo ponta a ponta', () => {
     const p = await api(`/api/catalog/establishments/burger-da-dona-maria`);
     assert.equal(p.status, 200, JSON.stringify(p.data));
     assert.equal(p.data.products[0].priceCents, 3000);
+    assert.ok(p.data.products[0].categoryName);
+    assert.equal(p.data.products[0].groups.find((g: any) => g.name === 'Adicionais').options.find((o: any) => o.name === 'Bacon').priceCents, 400);
   });
 
   test('7. cria pedido com opções e valida cálculo no servidor', async () => {

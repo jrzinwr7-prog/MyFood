@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useState } from 'react';
 import { Link, useParams } from 'react-router-dom';
-import { ArrowLeft, Bike, Clock3, Heart, Info, MapPin, Minus, Plus, ShoppingBag, Star, X } from 'lucide-react';
+import { ArrowLeft, Bike, Clock3, Heart, Info, MapPin, Minus, Plus, ShoppingBag, Star, X, UtensilsCrossed, Store } from 'lucide-react';
 import { api } from '../lib/api';
 import { brl, phone } from '../lib/format';
 import { useApp } from '../state/AppContext';
@@ -37,7 +37,7 @@ export default function StorePage() {
 
   function groupProducts(products: any[]) {
     const groups: Record<string, any[]> = {};
-    products.forEach(p => { const k = p.categoryId || 'outros'; (groups[k] ??= []).push(p); });
+    products.forEach(p => { const k = p.categoryName || 'Cardápio'; (groups[k] ??= []).push(p); });
     return groups;
   }
   const grouped = useMemo(() => data ? groupProducts(data.products) : {}, [data]);
@@ -59,18 +59,18 @@ export default function StorePage() {
     for (const g of product.groups ?? []) {
       for (const id of selected[g.id] ?? []) {
         const o = g.options.find((x: any) => x.id === id);
-        if (o) options.push({ group_name: g.name, option_name: o.name, price_cents: o.price_cents, option_id: o.id });
+        if (o) options.push({ group_name: g.name, option_name: o.name, price_cents: o.priceCents, option_id: o.id });
       }
       if ((selected[g.id]?.length ?? 0) < g.minSelected) { toast(`Selecione ao menos ${g.minSelected} opção de ${g.name}`, 'error'); return; }
     }
-    const unit = product.priceCents + options.reduce((s, o) => s + o.price_cents, 0);
+    const unit = product.priceCents;
     const item: CartItem = { key: `${product.id}|${options.map(o => o.option_name).sort().join(',')}|${notes}`,
       product_id: product.id, name: product.name, unit_price_cents: unit, quantity: qty, options,
       notes: notes || null, image_url: product.imageUrl };
     if (cart && cart.establishmentId !== est.id) {
       if (!confirm('Seu carrinho possui itens de outro estabelecimento. Deseja iniciar um novo carrinho?')) return;
     }
-    const base = cart && cart.establishmentId === est.id ? cart : { establishmentId: est.id, establishmentName: est.name, deliveryFeeCents: est.deliveryFeeCents, items: [] as CartItem[] };
+    const base = cart && cart.establishmentId === est.id ? cart : { establishmentId: est.id, establishmentName: est.name, establishmentSlug: est.slug, deliveryFeeCents: est.deliveryFeeCents, items: [] as CartItem[] };
     const existing = base.items.find(i => i.key === item.key);
     const items = existing ? base.items.map(i => i.key === item.key ? { ...i, quantity: i.quantity + qty } : i) : [...base.items, item];
     setCart({ ...base, items }); setProduct(null); toast('Item adicionado ao carrinho!');
@@ -89,9 +89,9 @@ export default function StorePage() {
   return <ConsumerShell>
     <Link to="/" className="mb-4 inline-flex items-center gap-1.5 text-xs font-bold text-ink/50 hover:text-coral"><ArrowLeft size={15} />Voltar</Link>
     <div className="relative mb-5 h-44 overflow-hidden rounded-3xl bg-ink sm:h-56">
-      {est.coverUrl ? <img src={est.coverUrl} className="h-full w-full object-cover" alt="" /> : <img src={`${import.meta.env.BASE_URL}hero-burger.jpg`} className="h-full w-full object-cover opacity-80" alt="" />}
+      {est.coverUrl ? <img src={est.coverUrl} className="h-full w-full object-cover" alt="" /> : <div className="grid h-full place-items-center bg-[#f0e1d5] text-[#ab8069]"><Store size={45} strokeWidth={1.2} /></div>}
       <div className="absolute inset-0 bg-gradient-to-t from-ink/70 to-transparent" />
-      <button onClick={toggleFavorite} className="absolute right-4 top-4 grid h-10 w-10 place-items-center rounded-full bg-white/90 text-coral"><Heart size={18} fill={favorite ? 'currentColor' : 'none'} /></button>
+      <button onClick={toggleFavorite} aria-label={favorite ? "Remover dos favoritos" : "Adicionar aos favoritos"} aria-pressed={favorite} className="absolute right-4 top-4 grid h-10 w-10 place-items-center rounded-full bg-white/90 text-coral"><Heart size={18} fill={favorite ? 'currentColor' : 'none'} /></button>
     </div>
     <div className="-mt-12 mb-6 relative px-1">
       <div className="grid h-20 w-20 place-items-center rounded-3xl border-4 border-white bg-white text-3xl font-black text-coral shadow-float">
@@ -118,7 +118,7 @@ export default function StorePage() {
 
     <div className="no-scrollbar mb-5 flex gap-2 overflow-x-auto border-b border-line pb-2">
       {Object.keys(grouped).map(k => <button key={k} onClick={() => setTab(k)} className={`whitespace-nowrap rounded-xl px-4 py-2 text-xs font-extrabold transition ${tab === k ? 'bg-ink text-white' : 'bg-white text-ink/55'}`}>
-        {k === 'outros' ? 'Cardápio' : k.replace(/_/g, ' ')}
+        {k}
       </button>)}
     </div>
 
@@ -126,7 +126,7 @@ export default function StorePage() {
       <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-3">
         {(grouped[tab] ?? []).map(p => <button key={p.id} onClick={() => openProduct(p)} className="card-hover flex gap-3 rounded-3xl border border-line/80 bg-white p-3 text-left shadow-card">
           <div className="grid h-24 w-24 shrink-0 place-items-center overflow-hidden rounded-2xl bg-cream text-3xl">
-            {p.imageUrl ? <img src={p.imageUrl} alt={p.name} className="h-full w-full object-cover" loading="lazy" /> : '🍽️'}
+            {p.imageUrl ? <img src={p.imageUrl} alt={p.name} className="h-full w-full object-cover" loading="lazy" /> : <UtensilsCrossed size={25} className="text-[#ad8571]" />}
           </div>
           <div className="min-w-0 flex-1 py-1">
             <p className="line-clamp-2 text-sm font-extrabold leading-snug">{p.name}</p>
@@ -145,7 +145,7 @@ export default function StorePage() {
 
     <Modal open={!!product} onClose={() => setProduct(null)} title={product?.name ?? ''} wide>
       {product && <div>
-        <div className="mb-4 h-44 overflow-hidden rounded-2xl bg-cream">{product.imageUrl ? <img src={product.imageUrl} className="h-full w-full object-cover" alt="" /> : <div className="grid h-full place-items-center text-6xl">🍔</div>}</div>
+        <div className="mb-4 h-44 overflow-hidden rounded-2xl bg-cream">{product.imageUrl ? <img src={product.imageUrl} className="h-full w-full object-cover" alt="" /> : <div className="grid h-full place-items-center text-[#ad8571]"><UtensilsCrossed size={40} strokeWidth={1.4} /></div>}</div>
         <p className="mb-4 text-sm text-ink/60">{product.description}</p>
         {(product.groups ?? []).map((g: any) => <div key={g.id} className="mb-5 rounded-2xl border border-line p-4">
           <div className="mb-3 flex items-center justify-between"><h4 className="text-sm font-extrabold">{g.name}</h4>
@@ -159,9 +159,9 @@ export default function StorePage() {
         <Textarea label="Observações (ex.: remover cebola)" value={notes} onChange={e => setNotes(e.target.value)} rows={2} maxLength={300} />
         <div className="mt-5 flex items-center justify-between gap-3">
           <div className="flex items-center gap-2 rounded-2xl bg-mist p-1">
-            <button onClick={() => setQty(Math.max(1, qty - 1))} className="grid h-9 w-9 place-items-center rounded-xl bg-white"><Minus size={15} /></button>
+            <button aria-label="Diminuir quantidade" onClick={() => setQty(Math.max(1, qty - 1))} className="grid h-9 w-9 place-items-center rounded-xl bg-white"><Minus size={15} /></button>
             <span className="w-6 text-center text-sm font-black">{qty}</span>
-            <button onClick={() => setQty(Math.min(30, qty + 1))} className="grid h-9 w-9 place-items-center rounded-xl bg-white"><Plus size={15} /></button>
+            <button aria-label="Aumentar quantidade" onClick={() => setQty(Math.min(30, qty + 1))} className="grid h-9 w-9 place-items-center rounded-xl bg-white"><Plus size={15} /></button>
           </div>
           <Button onClick={addToCart} className="flex-1">Adicionar · {brl((product.priceCents + product.groups.reduce((s: number, g: any) => s + (selected[g.id] ?? []).reduce((a: number, id: string) => a + (g.options.find((o: any) => o.id === id)?.priceCents ?? 0), 0), 0)) * qty)}</Button>
         </div>

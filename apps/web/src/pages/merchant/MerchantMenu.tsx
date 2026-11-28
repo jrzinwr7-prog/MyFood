@@ -42,7 +42,7 @@ export default function MerchantMenu() {
       action={<Button onClick={() => { setEditing({ ...empty, groups: [] }); setOpen(true); }}>Cadastrar produto</Button>} /> :
       <div className="grid gap-3 md:grid-cols-2 xl:grid-cols-3">{items.map(p => <Card key={p.id} className="overflow-hidden">
         <div className="flex gap-3 p-4">
-          <div className="grid h-20 w-20 shrink-0 place-items-center overflow-hidden rounded-2xl bg-cream text-2xl">{p.imageUrl ? <img src={p.imageUrl} className="h-full w-full object-cover" alt="" /> : '🍽️'}</div>
+          <div className="grid h-20 w-20 shrink-0 place-items-center overflow-hidden rounded-2xl bg-cream text-2xl">{p.imageUrl ? <img src={p.imageUrl} className="h-full w-full object-cover" alt="" /> : <Utensils size={23} className="text-[#ad8571]" />}</div>
           <div className="min-w-0 flex-1"><div className="flex items-start justify-between gap-2"><p className="text-sm font-extrabold">{p.name}</p><Badge tone={p.available ? 'green' : 'red'}>{p.available ? 'Ativo' : 'Pausado'}</Badge></div>
             <p className="mt-1 line-clamp-2 text-[11px] text-ink/50">{p.description || 'Sem descrição'}</p>
             <p className="mt-2 text-sm font-black text-coral">{brl(p.priceCents)}</p></div>

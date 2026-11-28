@@ -29,8 +29,9 @@ export const api = {
   del: <T = any>(p: string) => request<T>(p, { method: 'DELETE' }),
 };
 
-export type CartState = { establishmentId: string; establishmentName: string; deliveryFeeCents: number; items: CartItem[] };
-const CART_KEY = 'myfood_cart';
+export type CartState = { establishmentId: string; establishmentName: string; establishmentSlug?: string; deliveryFeeCents: number; items: CartItem[] };
+// Carrinhos anteriores podiam conter valores incorretos de adicionais; não os reutilize.
+const CART_KEY = 'myfood_cart_v2';
 export function loadCart(): CartState | null {
   try { const raw = localStorage.getItem(CART_KEY); return raw ? JSON.parse(raw) : null; } catch { return null; }
 }

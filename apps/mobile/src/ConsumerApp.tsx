@@ -91,7 +91,7 @@ export default function ConsumerApp({ user, onLogout }: any) {
       for (const id of selected[g.id] ?? []) { const o = g.options.find((x: any) => x.id === id); if (o) options.push({ group_name: g.name, option_name: o.name, price_cents: o.priceCents, option_id: o.id }); }
       if ((selected[g.id]?.length ?? 0) < g.minSelected) { setError(`Selecione ${g.minSelected} opção(ões) de ${g.name}`); return; }
     }
-    const unit = product.priceCents + options.reduce((s, o) => s + o.price_cents, 0);
+    const unit = product.priceCents;
     const item = { key: `${product.id}|${Date.now()}`, product_id: product.id, name: product.name, unit_price_cents: unit,
       quantity: qty, options, notes: notes || null, image_url: product.imageUrl };
     const base = cart && cart.establishmentId === store.establishment.id ? cart
@@ -146,8 +146,8 @@ export default function ConsumerApp({ user, onLogout }: any) {
             <Muted>{s.categoryName} · {s.neighborhood}</Muted>
             <View style={{ flexDirection: 'row', flexWrap: 'wrap', gap: 8, marginTop: 6 }}>
               <Badge tone={s.isOpen ? 'green' : 'red'}>{s.isOpen ? 'Aberto' : 'Fechado'}</Badge>
-              <Badge>🚴 {s.deliveryFeeCents ? brl(s.deliveryFeeCents) : 'Grátis'}</Badge>
-              <Badge>★ {s.ratingAvg ? s.ratingAvg.toFixed(1) : 'Novo'}</Badge>
+              <Badge>Entrega · {s.deliveryFeeCents ? brl(s.deliveryFeeCents) : 'Grátis'}</Badge>
+              <Badge>Avaliação · {s.ratingAvg ? s.ratingAvg.toFixed(1) : 'Novo'}</Badge>
             </View>
           </View>
         </Pressable>)}
@@ -158,12 +158,12 @@ export default function ConsumerApp({ user, onLogout }: any) {
         <Title size={24}>{store.establishment.name}</Title><Muted>{store.establishment.description}</Muted>
         <View style={{ flexDirection: 'row', flexWrap: 'wrap', marginTop: 8 }}>
           <Badge tone={store.establishment.isOpen ? 'green' : 'red'}>{store.establishment.isOpen ? 'Aberto agora' : 'Fechado'}</Badge>
-          <Badge>⏱ {store.establishment.prepTimeMin} min</Badge>
-          <Badge>🚴 {brl(store.establishment.deliveryFeeCents)}</Badge>
+          <Badge>Tempo · {store.establishment.prepTimeMin} min</Badge>
+          <Badge>Entrega · {brl(store.establishment.deliveryFeeCents)}</Badge>
         </View>
         <Title size={18} style={{ marginTop: 18 }}>Cardápio</Title>
         {store.products.map((p: any) => <Pressable key={p.id} onPress={() => { setProduct(p); setSelected({}); setQty(1); setNotes(''); setError(''); }} style={styles.productCard}>
-          <View style={styles.productIcon}><Text style={{ fontSize: 26 }}>🍽️</Text></View>
+          <View style={styles.productIcon}><Ionicons name="restaurant-outline" size={24} color="#a4775b" /></View>
           <View style={{ flex: 1 }}><Text style={styles.storeName}>{p.name}</Text><Muted numberOfLines={2}>{p.description}</Muted><Text style={styles.price}>{brl(p.priceCents)}</Text></View>
         </Pressable>)}
         {cart?.establishmentId === store.establishment.id && cart.items.length > 0 && <Button onPress={() => setView({ name: 'cart' })}>Ver carrinho · {brl(subtotal)}</Button>}
@@ -204,7 +204,7 @@ export default function ConsumerApp({ user, onLogout }: any) {
         <Card><Title size={16}>Resumo do pedido</Title>{order.items.map((i: any) => <View key={i.id} style={styles.row}><Muted>{i.quantity}× {i.name_snapshot}</Muted><Text>{brl(i.total_cents)}</Text></View>)}
           <View style={styles.row}><Title size={16}>Total</Title><Text style={styles.price}>{brl(order.order.total_cents)}</Text></View></Card>
         <Card><Title size={16}>Histórico</Title>{order.history.map((h: any) => <View key={h.id} style={styles.row}><Muted>{h.to_status.replaceAll('_', ' ')}</Muted><Muted>{shortDate(h.created_at)}</Muted></View>)}</Card>
-        {order.conversationId && <Button variant="outline" onPress={() => openConversation(order.conversationId)}>💬 Conversar com a loja</Button>}
+        {order.conversationId && <Button variant="outline" onPress={() => openConversation(order.conversationId)}>Conversar com a loja</Button>}
       </>}
 
       {view.name === 'orders' && <>

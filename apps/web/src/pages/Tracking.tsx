@@ -101,7 +101,7 @@ export default function Tracking() {
       </div>
     </div>
     <Modal open={reviewOpen} onClose={() => setReviewOpen(false)} title="Como foi sua experiência?">
-      <div className="mb-4 flex justify-center gap-2">{[1,2,3,4,5].map(n => <button key={n} onClick={() => setRating(n)} className="text-3xl" style={{ color: n <= rating ? '#ff9f1c' : '#d9dde5' }}>★</button>)}</div>
+      <div className="mb-4 flex justify-center gap-2">{[1,2,3,4,5].map(n => <button key={n} type="button" aria-label={`${n} ${n === 1 ? 'estrela' : 'estrelas'}`} aria-pressed={rating === n} onClick={() => setRating(n)} className="grid h-11 w-11 place-items-center rounded-xl text-tangerine hover:bg-cream"><Star size={27} fill={n <= rating ? 'currentColor' : 'none'} /></button>)}</div>
       <Textarea label="Deixe um comentário (opcional)" rows={3} value={comment} onChange={e => setComment(e.target.value)} />
       <div className="mt-4 grid grid-cols-2 gap-2"><Button variant="outline" onClick={() => submitReview('courier')}>Avaliar entregador</Button><Button onClick={() => submitReview('establishment')}>Avaliar loja</Button></div>
     </Modal>

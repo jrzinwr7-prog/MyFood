@@ -40,7 +40,7 @@ export function ConsumerShell({ children }: { children: React.ReactNode }) {
         </div>
       </div>
     </header>
-    <main id="conteudo" tabIndex={-1} className="mx-auto min-h-[70vh] max-w-6xl px-4 pb-28 pt-5 sm:px-6 md:pb-16">{children}</main>
+    <main id="conteudo" tabIndex={-1} className="consumer-main mx-auto min-h-[70vh] max-w-6xl px-4 pb-28 pt-5 sm:px-6 md:pb-16">{children}</main>
     {loc.pathname !== '/suporte-ia' && <Link to="/suporte-ia" aria-label="Abrir suporte por inteligência artificial" className="fixed bottom-[calc(5.25rem+env(safe-area-inset-bottom))] right-3 z-20 flex h-11 w-11 items-center justify-center gap-2 rounded-full bg-ink text-xs font-extrabold text-white shadow-float transition hover:bg-coral md:bottom-6 md:right-6 md:w-auto md:px-4"><MessageCircle size={18} /><span className="hidden md:inline">Suporte IA</span></Link>}
     <nav className="mobile-nav fixed bottom-0 left-0 right-0 z-30 pb-[env(safe-area-inset-bottom)] md:hidden">
       <div className="mx-auto flex max-w-lg items-center justify-around px-2 py-2">
@@ -73,8 +73,8 @@ export function DashShell({ role, children, title }: { role: keyof typeof dashbo
   if (!getToken()) { navigate('/entrar'); return null; }
   if (user && user.role !== role) return <ConsumerShell><div className="card p-8 text-center"><h2 className="text-xl font-extrabold">Acesso restrito</h2><p className="mt-2 text-sm text-ink/60">Este painel é exclusivo do perfil {role}.</p></div></ConsumerShell>;
   return <div className="min-h-screen bg-mist lg:flex">
-    <aside className={`fixed inset-y-0 left-0 z-40 w-64 border-r border-line bg-white p-5 transition-transform lg:sticky lg:top-0 lg:h-screen lg:translate-x-0 ${menu ? 'translate-x-0' : '-translate-x-full'}`}>
-      <div className="flex items-center justify-between"><Logo /><button onClick={() => setMenu(false)} className="lg:hidden"><X size={20} /></button></div>
+    <aside className={`dashboard-sidebar fixed inset-y-0 left-0 z-40 w-64 border-r border-line bg-white p-5 transition-transform lg:sticky lg:top-0 lg:h-screen lg:translate-x-0 ${menu ? 'translate-x-0' : '-translate-x-full'}`}>
+      <div className="flex items-center justify-between"><Logo /><button onClick={() => setMenu(false)} aria-label="Fechar menu" className="lg:hidden"><X size={20} /></button></div>
       <p className="mt-6 text-[10px] font-black uppercase tracking-widest text-ink/35">{cfg.label}</p>
       <nav className="mt-3 space-y-1">
         {cfg.links.map(([to, label, Icon]) => <NavLink key={to} to={to} end onClick={() => setMenu(false)}
@@ -88,13 +88,13 @@ export function DashShell({ role, children, title }: { role: keyof typeof dashbo
     </aside>
     {menu && <div className="fixed inset-0 z-30 bg-ink/40 lg:hidden" onClick={() => setMenu(false)} />}
     <div className="min-w-0 flex-1">
-      <header className="sticky top-0 z-20 flex h-16 items-center gap-3 border-b border-line bg-white/90 px-4 backdrop-blur-xl sm:px-6">
-        <button onClick={() => setMenu(true)} className="rounded-xl bg-mist p-2 lg:hidden"><Menu size={20} /></button>
+      <header className="dashboard-header sticky top-0 z-20 flex h-16 items-center gap-3 border-b border-line bg-white/90 px-4 backdrop-blur-xl sm:px-6">
+        <button onClick={() => setMenu(true)} aria-label="Abrir menu" aria-expanded={menu} className="rounded-xl bg-mist p-2 lg:hidden"><Menu size={20} /></button>
         <h1 className="truncate text-lg font-extrabold">{title}</h1>
         <span className="ml-auto hidden text-xs font-semibold text-ink/50 sm:block">{user?.name}</span>
         <div className="grid h-9 w-9 place-items-center rounded-full bg-ink text-xs font-bold text-white">{user?.name?.slice(0, 2).toUpperCase()}</div>
       </header>
-      <main className="mx-auto max-w-6xl p-4 sm:p-6">{children}</main>
+      <main className="dashboard-main mx-auto max-w-6xl p-4 sm:p-6">{children}</main>
     </div>
   </div>;
 }

@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { ArrowLeft, Minus, Plus, ShoppingBag, Trash2, Tag, X } from 'lucide-react';
+import { ArrowLeft, Minus, Plus, ShoppingBag, Trash2, Tag, X, UtensilsCrossed } from 'lucide-react';
 import { useApp } from '../state/AppContext';
 import { brl } from '../lib/format';
 import { ConsumerShell } from '../components/Layout';
@@ -22,13 +22,13 @@ export default function Cart() {
   void discount;
 
   return <ConsumerShell>
-    <Link to={`/loja/${cart.establishmentId}`} className="mb-4 inline-flex items-center gap-1.5 text-xs font-bold text-ink/50"><ArrowLeft size={15} />Continuar comprando</Link>
+    <Link to={cart.establishmentSlug ? `/loja/${cart.establishmentSlug}` : '/'} className="mb-4 inline-flex items-center gap-1.5 text-xs font-bold text-ink/50"><ArrowLeft size={15} />Continuar comprando</Link>
     <h1 className="mb-1 text-2xl font-black">Seu carrinho</h1>
     <p className="mb-6 text-sm text-ink/50">Pedido em <b className="text-ink">{cart.establishmentName}</b></p>
     <div className="grid gap-6 lg:grid-cols-[1fr_360px]">
       <div className="space-y-3">
         {cart.items.map(i => <Card key={i.key} className="flex gap-3 p-4">
-          <div className="grid h-20 w-20 shrink-0 place-items-center overflow-hidden rounded-2xl bg-cream text-2xl">{i.image_url ? <img src={i.image_url} className="h-full w-full object-cover" alt="" /> : '🍽️'}</div>
+          <div className="grid h-20 w-20 shrink-0 place-items-center overflow-hidden rounded-2xl bg-cream text-2xl">{i.image_url ? <img src={i.image_url} className="h-full w-full object-cover" alt="" /> : <UtensilsCrossed size={23} className="text-[#ad8571]" />}</div>
           <div className="min-w-0 flex-1">
             <p className="text-sm font-extrabold">{i.name}</p>
             {i.options.length > 0 && <p className="mt-0.5 text-[11px] text-ink/50">{i.options.map(o => o.option_name).join(', ')}</p>}
@@ -36,11 +36,11 @@ export default function Cart() {
             <p className="mt-2 text-sm font-black text-coral">{brl(itemUnitCents(i) * i.quantity)}</p>
           </div>
           <div className="flex flex-col items-end justify-between">
-            <button onClick={() => setCart({ ...cart, items: cart.items.filter(x => x.key !== i.key) })} className="text-ink/35 hover:text-red-500"><Trash2 size={17} /></button>
+            <button aria-label={`Remover ${i.name}`} onClick={() => setCart({ ...cart, items: cart.items.filter(x => x.key !== i.key) })} className="text-ink/35 hover:text-red-500"><Trash2 size={17} /></button>
             <div className="flex items-center gap-2 rounded-xl bg-mist p-1">
-              <button onClick={() => changeQty(i.key, -1)} className="grid h-7 w-7 place-items-center rounded-lg bg-white"><Minus size={13} /></button>
+              <button aria-label={`Diminuir quantidade de ${i.name}`} onClick={() => changeQty(i.key, -1)} className="grid h-7 w-7 place-items-center rounded-lg bg-white"><Minus size={13} /></button>
               <span className="w-5 text-center text-xs font-black">{i.quantity}</span>
-              <button onClick={() => changeQty(i.key, 1)} className="grid h-7 w-7 place-items-center rounded-lg bg-white"><Plus size={13} /></button>
+              <button aria-label={`Aumentar quantidade de ${i.name}`} onClick={() => changeQty(i.key, 1)} className="grid h-7 w-7 place-items-center rounded-lg bg-white"><Plus size={13} /></button>
             </div>
           </div>
         </Card>)}

@@ -1,6 +1,7 @@
 import React from 'react';
 import { ActivityIndicator, Pressable, StyleSheet, Text, View, Modal, ScrollView } from 'react-native';
 import { theme } from './lib/theme';
+import { Ionicons } from '@expo/vector-icons';
 
 export function Card({ children, style }: any) { return <View style={[styles.card, style]}>{children}</View>; }
 export function Title({ children, size = 22 }: any) { return <Text style={[styles.title, { fontSize: size }]}>{children}</Text>; }
@@ -8,8 +9,8 @@ export function Muted({ children }: any) { return <Text style={styles.muted}>{ch
 export function Button({ children, onPress, variant = 'primary', loading, disabled, style }: any) {
   return <Pressable disabled={loading || disabled} onPress={onPress} style={({ pressed }) => [styles.button,
     variant === 'outline' ? styles.outline : variant === 'ghost' ? styles.ghost : styles.primary,
-    pressed && { opacity: 0.75 }, disabled && { opacity: 0.5 }, style]}>
-    {loading ? <ActivityIndicator color="#fff" /> : <Text style={[styles.buttonText, variant === 'outline' && { color: theme.ink }]}>{children}</Text>}
+    pressed && { opacity: 0.88, transform: [{ scale: 0.98 }] }, disabled && { opacity: 0.5 }, style]}>
+    {loading ? <ActivityIndicator color="#fff" /> : <Text style={[styles.buttonText, variant !== 'primary' && { color: theme.ink }]}>{children}</Text>}
   </Pressable>;
 }
 export function Input({ label, value, onChangeText, placeholder, keyboardType, secureTextEntry, multiline, onSubmitEditing, inputStyle, visible = true }: any) {
@@ -26,7 +27,7 @@ export function Badge({ children, tone = 'neutral' }: any) {
   const fg: any = { neutral: theme.ink, green: '#0a7f5b', red: '#c62828', orange: '#b45309', blue: '#9a3412' };
   return <View style={[styles.badge, { backgroundColor: bg[tone] }]}><Text style={[styles.badgeText, { color: fg[tone] }]}>{children}</Text></View>;
 }
-export function Empty({ title, text }: any) { return <View style={styles.empty}><Text style={{ fontSize: 32 }}>🍽️</Text><Title size={17}>{title}</Title><Muted>{text}</Muted></View>; }
+export function Empty({ title, text }: any) { return <View style={styles.empty}><View style={styles.emptyIcon}><Ionicons name="file-tray-outline" size={26} color={theme.coral}/></View><Title size={17}>{title}</Title><Muted>{text}</Muted></View>; }
 export function Loading({ label = 'Carregando…' }: any) { return <View style={styles.loading}><ActivityIndicator color={theme.coral} size="large" /><Muted>{label}</Muted></View>; }
 export function Overlay({ visible, onClose, children }: any) {
   return <Modal visible={visible} animationType="slide" transparent onRequestClose={onClose}>
@@ -46,8 +47,9 @@ const styles = StyleSheet.create({
   input: { backgroundColor: '#fff', borderWidth: 1, borderColor: theme.line, borderRadius: 14, paddingHorizontal: 14,
     minHeight: 46, fontSize: 14, color: theme.ink },
   badge: { alignSelf: 'flex-start', borderRadius: 999, paddingHorizontal: 10, paddingVertical: 4, marginRight: 6, marginBottom: 4 },
+  emptyIcon: { width: 56, height: 56, borderRadius: 18, alignItems: 'center', justifyContent: 'center', backgroundColor: '#f8eae1', marginBottom: 5 },
   badgeText: { fontSize: 10, fontWeight: '800' }, empty: { alignItems: 'center', padding: 40, gap: 8 },
   loading: { flex: 1, alignItems: 'center', justifyContent: 'center', gap: 12 },
-  overlayBg: { flex: 1, backgroundColor: 'rgba(16,27,45,.55)', justifyContent: 'flex-end' },
+  overlayBg: { flex: 1, backgroundColor: 'rgba(52,35,27,.55)', justifyContent: 'flex-end' },
   overlayCard: { backgroundColor: '#fff', borderTopLeftRadius: 24, borderTopRightRadius: 24, padding: 20, maxHeight: '88%' },
 });

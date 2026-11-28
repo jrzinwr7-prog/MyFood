@@ -43,11 +43,11 @@ export function serializeEstablishment(row: any, coords?: { lat: number; lng: nu
 }
 
 export function productsOf(establishmentId: string): any[] {
-  const products = all<any>('SELECT * FROM products WHERE establishment_id=? AND available=1 ORDER BY sort_order, name', establishmentId);
+  const products = all<any>('SELECT p.*, c.name AS category_name FROM products p LEFT JOIN categories c ON c.id=p.category_id WHERE p.establishment_id=? AND p.available=1 ORDER BY p.sort_order, p.name', establishmentId);
   return products.map(p => {
     const groups = all<any>('SELECT * FROM product_option_groups WHERE product_id=? ORDER BY sort_order,name', p.id);
     return {
-      id: p.id, establishmentId: p.establishment_id, categoryId: p.category_id, name: p.name, description: p.description,
+      id: p.id, establishmentId: p.establishment_id, categoryId: p.category_id, categoryName: p.category_name ?? null, name: p.name, description: p.description,
       priceCents: p.price_cents, imageUrl: p.image_url, available: !!p.available, sortOrder: p.sort_order, prepMinutes: p.prep_minutes,
       groups: groups.map(g => ({ id: g.id, name: g.name, minSelected: g.min_selected, maxSelected: g.max_selected,
         options: all<any>('SELECT * FROM product_options WHERE group_id=? AND available=1 ORDER BY name', g.id)
@@ -57,7 +57,7 @@ export function productsOf(establishmentId: string): any[] {
 }
 
 catalogRouter.get('/public', asyncRoute((_req, res) => {
-  res.json({ appName: 'MyFood', currency: 'BRL', locale: 'pt-BR', city: setting('city', 'Lapão'),
+  res.json({ appName: 'FastDelivery', currency: 'BRL', locale: 'pt-BR', city: setting('city', 'Lapão'),
     states: setting('states', ['BA']), paymentsProvider: config.payments.provider,
     features: { pixManual: true, cash: true, onlineCards: false },
     privacyUrl: '/privacidade', termsUrl: '/termos' });

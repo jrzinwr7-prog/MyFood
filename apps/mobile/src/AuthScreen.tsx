@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { ScrollView, StyleSheet, Text, View, Pressable, Image } from 'react-native';
 import { api, setToken } from './lib/api';
 import { theme } from './lib/theme';
+import { Ionicons } from '@expo/vector-icons';
 import { Badge, Button, Input } from './components';
 
 export default function AuthScreen({ onLogin }: any) {
@@ -29,8 +30,8 @@ export default function AuthScreen({ onLogin }: any) {
       <Pressable onPress={() => setMode('register')} style={[styles.tab, mode === 'register' && styles.tabOn]}><Text style={[styles.tabText, mode === 'register' && styles.tabTextOn]}>Criar conta</Text></Pressable>
     </View>
     {mode === 'register' && <View style={styles.roles}>
-      <Pressable onPress={() => setRole('consumer')} style={[styles.role, role === 'consumer' && styles.roleOn]}><Text style={styles.roleEmoji}>🛍️</Text><Text style={styles.roleText}>Consumidor</Text></Pressable>
-      <Pressable onPress={() => setRole('courier')} style={[styles.role, role === 'courier' && styles.roleOn]}><Text style={styles.roleEmoji}>🚴</Text><Text style={styles.roleText}>Entregador</Text></Pressable>
+      <Pressable onPress={() => setRole('consumer')} style={[styles.role, role === 'consumer' && styles.roleOn]}><Ionicons name="bag-handle-outline" size={24} color={theme.coral} /><Text style={styles.roleText}>Consumidor</Text></Pressable>
+      <Pressable onPress={() => setRole('courier')} style={[styles.role, role === 'courier' && styles.roleOn]}><Ionicons name="bicycle-outline" size={24} color={theme.coral} /><Text style={styles.roleText}>Entregador</Text></Pressable>
     </View>}
     <Input label="Nome completo" value={f.name} onChangeText={(v: string) => set('name', v)} placeholder="Seu nome" visible={mode === 'register'} />
     {mode === 'register' && <Input label="Celular" value={f.phone} onChangeText={(v: string) => set('phone', v)} placeholder="(74) 99999-0000" keyboardType="phone-pad" />}
@@ -49,7 +50,7 @@ export default function AuthScreen({ onLogin }: any) {
 const styles = StyleSheet.create({ container: { padding: 22, paddingTop: 60, backgroundColor: theme.mist, flexGrow: 1 },
   hero: { alignItems: 'center', marginBottom: 26 }, logo: { width: 62, height: 62, borderRadius: 18, backgroundColor: theme.coral, alignItems: 'center', justifyContent: 'center' },
   logoText: { color: '#fff', fontSize: 34, fontWeight: '900' }, brand: { fontSize: 28, fontWeight: '900', marginTop: 8, color: theme.ink }, tagline: { color: theme.muted, fontSize: 12 },
-  tabs: { flexDirection: 'row', backgroundColor: '#e7eaf0', borderRadius: 14, padding: 4, marginBottom: 18 }, tab: { flex: 1, padding: 10, borderRadius: 11, alignItems: 'center' },
+  tabs: { flexDirection: 'row', backgroundColor: '#efe5db', borderRadius: 14, padding: 4, marginBottom: 18 }, tab: { flex: 1, padding: 10, borderRadius: 11, alignItems: 'center' },
   tabOn: { backgroundColor: '#fff' }, tabText: { fontWeight: '700', color: theme.muted }, tabTextOn: { color: theme.ink },
   roles: { flexDirection: 'row', gap: 10, marginBottom: 16 }, role: { flex: 1, backgroundColor: '#fff', borderRadius: 16, padding: 14, alignItems: 'center', borderWidth: 1, borderColor: theme.line },
   roleOn: { borderColor: theme.coral, backgroundColor: '#fff5f2' }, roleEmoji: { fontSize: 24 }, roleText: { fontSize: 11, fontWeight: '700', marginTop: 6 },

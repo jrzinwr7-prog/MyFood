@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { ShoppingBag, Store, RotateCcw, MessageCircle } from 'lucide-react';
 import { api } from '../lib/api';
 import { brl, dt } from '../lib/format';
@@ -9,6 +9,7 @@ import { Badge, Button, EmptyState, Spinner } from '../components/ui';
 
 export default function Orders() {
   const { toast, setCart } = useApp();
+  const navigate = useNavigate();
   const [items, setItems] = useState<any[] | null>(null);
   useEffect(() => { api.get('/orders/mine').then(r => setItems(r.items)).catch(() => setItems([])); }, []);
   async function repeat(order: any) {
@@ -24,16 +25,16 @@ export default function Orders() {
           const group = (catalogProduct?.groups ?? []).find((g: any) =>
             (g.options ?? []).some((x: any) => x.name === o.optionName));
           const option = group?.options?.find((x: any) => x.name === o.optionName);
-          return { group_name: o.groupName, option_name: o.optionName, price_cents: o.priceCents, option_id: option?.id };
+          return { group_name: o.groupName, option_name: o.optionName, price_cents: option?.priceCents ?? o.priceCents, option_id: option?.id };
         });
-        return { key: `${pid}|${Date.now()}`, product_id: pid, name: i.name_snapshot, unit_price_cents: i.unit_price_cents,
+        return { key: `${pid}|${Date.now()}`, product_id: pid, name: i.name_snapshot, unit_price_cents: catalogProduct?.priceCents ?? Math.max(0, i.unit_price_cents - options.reduce((sum: number, o: any) => sum + o.price_cents, 0)),
           quantity: i.quantity, options: options.filter((o: any) => o.option_id), notes: i.notes, image_url: catalogProduct?.imageUrl ?? null };
       }).filter((i: any) => !!i.product_id);
       if (!cartItems.length) { toast('Produtos indisponíveis para repetir este pedido', 'error'); return; }
-      setCart({ establishmentId: order.establishment_id, establishmentName: order.establishment_name,
+      setCart({ establishmentId: order.establishment_id, establishmentName: order.establishment_name, establishmentSlug: slug,
         deliveryFeeCents: storeData.establishment.deliveryFeeCents, items: cartItems });
       toast('Itens adicionados ao carrinho');
-      window.location.href = '/carrinho';
+      navigate('/carrinho');
     } catch (e: any) { toast(e.message, 'error'); }
   }
   return <ConsumerShell>

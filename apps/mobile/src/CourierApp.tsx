@@ -3,11 +3,12 @@ import { ScrollView, StyleSheet, Text, View, Pressable, RefreshControl, Linking 
 import * as Location from 'expo-location';
 import { api, brl, shortDate, getToken, API_URL } from './lib/api';
 import { theme } from './lib/theme';
+import { Ionicons } from '@expo/vector-icons';
 import AiSupport from './AiSupport';
 import { Badge, Button, Card, Empty, Loading, Muted, Title } from './components';
 
-const TABS = [{ key: 'home', label: 'Painel', icon: '🏠' }, { key: 'offers', label: 'Solicitações', icon: '📍' },
-  { key: 'deliveries', label: 'Entregas', icon: '🚴' }, { key: 'earnings', label: 'Ganhos', icon: '💰' }, { key: 'support', label: 'Suporte', icon: '💬' }];
+const TABS = [{ key: 'home', label: 'Painel', icon: 'home-outline' }, { key: 'offers', label: 'Solicitações', icon: 'location-outline' },
+  { key: 'deliveries', label: 'Entregas', icon: 'bicycle-outline' }, { key: 'earnings', label: 'Ganhos', icon: 'wallet-outline' }, { key: 'support', label: 'Suporte', icon: 'chatbubble-outline' }] as const;
 
 export default function CourierApp({ user, onLogout }: any) {
   const [tab, setTab] = useState('home'); const [me, setMe] = useState<any>(null);
@@ -52,11 +53,11 @@ export default function CourierApp({ user, onLogout }: any) {
   if (!me) return <Loading label="Carregando painel do entregador…" />;
   return <View style={styles.root}>
     <ScrollView contentContainerStyle={styles.content} refreshControl={<RefreshControl refreshing={false} onRefresh={load} />}>
-      <Text style={styles.greeting}>Olá, {user.name.split(' ')[0]} 👋</Text>
+      <Text style={styles.greeting}>Olá, {user.name.split(' ')[0]}</Text>
       {error ? <Text style={styles.error}>{error}</Text> : null}
       {me.courier.status === 'pending' && <Card><Title size={17}>Cadastro em análise</Title><Muted>Seu cadastro será aprovado pela administradora antes de aceitar corridas.</Muted></Card>}
-      {me.courier.status === 'approved' && <Pressable onPress={toggleOnline} style={[styles.online, me.courier.online && styles.onlineOn]}>
-        <Text style={styles.onlineEmoji}>{me.courier.online ? '🟢' : '⚪'}</Text>
+      {me.courier.status === 'approved' && <Pressable onPress={toggleOnline} disabled={busy} accessibilityRole="button" accessibilityState={{ disabled: busy }} style={[styles.online, me.courier.online && styles.onlineOn, busy && { opacity: 0.6 }]}>
+        <View style={[styles.onlineDot, me.courier.online && styles.onlineDotOn]} />
         <View><Text style={styles.onlineTitle}>{me.courier.online ? 'VOCÊ ESTÁ ONLINE' : 'VOCÊ ESTÁ OFFLINE'}</Text>
           <Text style={styles.onlineSub}>{me.courier.online ? 'Recebendo solicitações' : 'Toque para ficar online'}</Text></View>
       </Pressable>}
@@ -112,8 +113,8 @@ export default function CourierApp({ user, onLogout }: any) {
         <Button variant="ghost" onPress={onLogout}>Sair da conta</Button>
       </>}
     </ScrollView>
-    <View style={styles.tabbar}>{TABS.map(t => <Pressable key={t.key} onPress={() => setTab(t.key)} style={styles.tabItem}>
-      <Text style={{ fontSize: 19, opacity: tab === t.key ? 1 : 0.4 }}>{t.icon}</Text>
+    <View style={styles.tabbar}>{TABS.map(t => <Pressable key={t.key} onPress={() => setTab(t.key)} accessibilityRole="tab" accessibilityState={{ selected: tab === t.key }} style={styles.tabItem}>
+      <View style={[styles.tabIcon, tab === t.key && styles.tabIconOn]}><Ionicons name={t.icon} size={20} color={tab === t.key ? theme.coral : theme.muted} /></View>
       <Text style={[styles.tabLabel, tab === t.key && styles.tabLabelOn]}>{t.label}</Text>
     </Pressable>)}</View>
   </View>;
@@ -121,9 +122,9 @@ export default function CourierApp({ user, onLogout }: any) {
 const styles = StyleSheet.create({ root: { flex: 1, backgroundColor: theme.mist }, content: { padding: 18, paddingBottom: 100 },
   greeting: { fontSize: 22, fontWeight: '900', color: theme.ink, marginBottom: 12 }, error: { color: '#c62828', fontSize: 12, fontWeight: '700', marginBottom: 8 },
   online: { flexDirection: 'row', alignItems: 'center', gap: 14, backgroundColor: theme.ink, borderRadius: 20, padding: 20, marginBottom: 16 },
-  onlineOn: { backgroundColor: theme.mint }, onlineEmoji: { fontSize: 28 }, onlineTitle: { color: '#fff', fontWeight: '900', fontSize: 15 }, onlineSub: { color: 'rgba(255,255,255,.75)', fontSize: 11 },
+  onlineOn: { backgroundColor: theme.mint }, onlineDot: { width: 14, height: 14, borderRadius: 7, backgroundColor: '#cab9a8', borderWidth: 2, borderColor: '#fff' }, onlineDotOn: { backgroundColor: '#b8edbd' }, onlineTitle: { color: '#fff', fontWeight: '900', fontSize: 15 }, onlineSub: { color: 'rgba(255,255,255,.75)', fontSize: 11 },
   stats: { flexDirection: 'row', gap: 10 }, stat: { flex: 1 }, statValue: { fontSize: 20, fontWeight: '900', color: theme.ink },
   storeName: { fontSize: 14, fontWeight: '800', color: theme.ink }, price: { color: theme.coral, fontWeight: '900', fontSize: 15 },
   row: { flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', marginVertical: 6 }, actions: { flexDirection: 'row', gap: 8, marginTop: 8 },
   smallBtn: { flex: 1, marginTop: 4, paddingHorizontal: 6 }, tabbar: { position: 'absolute', bottom: 0, left: 0, right: 0, flexDirection: 'row', backgroundColor: '#fff', paddingVertical: 10, borderTopWidth: 1, borderTopColor: theme.line },
-  tabItem: { flex: 1, alignItems: 'center' }, tabLabel: { fontSize: 10, color: theme.muted, marginTop: 2 }, tabLabelOn: { color: theme.coral, fontWeight: '800' } });
+  tabItem: { flex: 1, alignItems: 'center' }, tabIcon: { paddingHorizontal: 11, paddingVertical: 3, borderRadius: 12 }, tabIconOn: { backgroundColor: '#f9ebe2' }, tabLabel: { fontSize: 10, color: theme.muted, marginTop: 2 }, tabLabelOn: { color: theme.coral, fontWeight: '800' } });
