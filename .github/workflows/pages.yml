@@ -24,7 +24,9 @@ jobs:
         env:
           VITE_BASE_PATH: /MyFood/
           VITE_HASH_ROUTER: 'true'
-          VITE_VISUAL_PREVIEW: 'true'
+          VITE_VISUAL_PREVIEW: 'false'
+          VITE_TEMP_TEST: 'true'
+          VITE_API_ORIGIN: https://myfood-api-teste.onrender.com
       - uses: actions/upload-pages-artifact@v3
         with:
           path: apps/web/dist
@@ -37,3 +39,14 @@ jobs:
     steps:
       - id: deployment
         uses: actions/deploy-pages@v4
+
+  verify-support:
+    if: contains(github.event.head_commit.message, '[test-support]')
+    needs: deploy
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - run: node scripts/test-render-support.mjs

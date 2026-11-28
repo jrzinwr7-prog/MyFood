@@ -78,5 +78,5 @@ function RoutesView() {
 }
 export default function App() {
   const Router = import.meta.env.VITE_HASH_ROUTER === 'true' ? HashRouter : BrowserRouter;
-  return <Router><AppProvider>{import.meta.env.VITE_VISUAL_PREVIEW === 'true' && <div role="status" className="bg-amber-100 px-4 py-3 text-center text-sm font-bold text-amber-900">Prévia visual: servidor não conectado. Cadastros, pedidos e pagamentos não estão disponíveis.</div>}<RoutesView /></AppProvider></Router>;
+  return <Router><AppProvider>{import.meta.env.VITE_VISUAL_PREVIEW === 'true' && <div role="status" className="bg-amber-100 px-4 py-3 text-center text-sm font-bold text-amber-900">Prévia visual: servidor não conectado. Cadastros, pedidos e pagamentos não estão disponíveis.</div>}{import.meta.env.VITE_TEMP_TEST === 'true' && <div role="status" className="bg-amber-100 px-4 py-3 text-center text-sm font-bold text-amber-900">Ambiente de teste temporário: use apenas dados fictícios. Contas podem ser apagadas; não faça pedidos ou pagamentos reais.</div>}<RoutesView /></AppProvider></Router>;
 }
