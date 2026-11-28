@@ -17,7 +17,7 @@ export function ConsumerShell({ children }: { children: React.ReactNode }) {
   const count = cart?.items.reduce((s, i) => s + i.quantity, 0) ?? 0;
   return <div className="min-h-screen bg-mist">
     <a href="#conteudo" className="skip-link">Pular para o conteúdo</a>
-    <header className="sticky top-0 z-30 border-b border-line/70 bg-white/90 backdrop-blur-xl">
+    <header className="site-header sticky top-0 z-30">
       <div className="mx-auto flex h-16 max-w-6xl items-center gap-3 px-4 sm:px-6">
         <Logo />
         <div className="hidden flex-1 items-center md:flex">
@@ -42,12 +42,12 @@ export function ConsumerShell({ children }: { children: React.ReactNode }) {
     </header>
     <main id="conteudo" tabIndex={-1} className="mx-auto min-h-[70vh] max-w-6xl px-4 pb-28 pt-5 sm:px-6 md:pb-16">{children}</main>
     {loc.pathname !== '/suporte-ia' && <Link to="/suporte-ia" aria-label="Abrir suporte por inteligência artificial" className="fixed bottom-[calc(5.25rem+env(safe-area-inset-bottom))] right-3 z-20 flex h-11 w-11 items-center justify-center gap-2 rounded-full bg-ink text-xs font-extrabold text-white shadow-float transition hover:bg-coral md:bottom-6 md:right-6 md:w-auto md:px-4"><MessageCircle size={18} /><span className="hidden md:inline">Suporte IA</span></Link>}
-    <nav className="fixed bottom-0 left-0 right-0 z-30 border-t border-line bg-white/95 pb-[env(safe-area-inset-bottom)] backdrop-blur-xl md:hidden">
+    <nav className="mobile-nav fixed bottom-0 left-0 right-0 z-30 pb-[env(safe-area-inset-bottom)] md:hidden">
       <div className="mx-auto flex max-w-lg items-center justify-around px-2 py-2">
         {[
           { to: '/', icon: Home, label: 'Início' }, { to: '/pedidos', icon: ShoppingBag, label: 'Pedidos' },
           { to: '/conversas', icon: MessageCircle, label: 'Conversas' }, { to: '/perfil', icon: User, label: 'Perfil' },
-        ].map(i => <NavLink key={i.to} to={i.to} end={i.to === '/'} className={({ isActive }) => `flex flex-col items-center gap-0.5 rounded-2xl px-3 py-1.5 text-[10px] font-bold ${isActive ? 'text-coral' : 'text-ink/45'}`}>
+        ].map(i => <NavLink key={i.to} to={i.to} end={i.to === '/'} className={({ isActive }) => `nav-item flex flex-col items-center gap-0.5 rounded-2xl px-3 py-1.5 text-[10px] font-bold ${isActive ? 'text-coral' : 'text-ink/45'}`}>
           <i.icon size={21} />{i.label}</NavLink>)}
       </div>
     </nav>

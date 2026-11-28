@@ -12,11 +12,11 @@ export function Button({ children, onPress, variant = 'primary', loading, disabl
     {loading ? <ActivityIndicator color="#fff" /> : <Text style={[styles.buttonText, variant === 'outline' && { color: theme.ink }]}>{children}</Text>}
   </Pressable>;
 }
-export function Input({ label, value, onChangeText, placeholder, keyboardType, secureTextEntry, multiline, onSubmitEditing, visible = true }: any) {
+export function Input({ label, value, onChangeText, placeholder, keyboardType, secureTextEntry, multiline, onSubmitEditing, inputStyle, visible = true }: any) {
   if (!visible) return null;
-  return <View style={styles.field}><Text style={styles.label}>{label}</Text>
+  return <View style={styles.field}>{label ? <Text style={styles.label}>{label}</Text> : null}
     <TextInputCompat value={value} onChangeText={onChangeText} placeholder={placeholder} keyboardType={keyboardType}
-      secureTextEntry={secureTextEntry} multiline={multiline} onSubmitEditing={onSubmitEditing} style={[styles.input, multiline && { height: 90, textAlignVertical: 'top' }]} /></View>;
+      secureTextEntry={secureTextEntry} multiline={multiline} onSubmitEditing={onSubmitEditing} style={[styles.input, multiline && { height: 90, textAlignVertical: 'top' }, inputStyle]} /></View>;
 }
 // Import separado para manter o componente legível.
 import { TextInput } from 'react-native';

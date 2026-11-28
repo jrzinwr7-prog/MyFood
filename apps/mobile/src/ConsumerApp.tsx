@@ -1,17 +1,31 @@
-import React, { useCallback, useEffect, useState } from 'react';
-import { ScrollView, StyleSheet, Text, View, Pressable, RefreshControl } from 'react-native';
+import React, { useCallback, useEffect, useRef, useState } from 'react';
+import { ScrollView, StyleSheet, Text, View, Pressable, RefreshControl, Image, Animated, AccessibilityInfo, Easing } from 'react-native';
 import { api, brl, shortDate, getToken } from './lib/api';
 import { theme } from './lib/theme';
+import { Ionicons } from '@expo/vector-icons';
 import AiSupport from './AiSupport';
 import { Badge, Button, Card, Empty, Input, Loading, Muted, Overlay, Title } from './components';
 
-const TABS = [{ key: 'home', label: 'Início', icon: '🏠' }, { key: 'orders', label: 'Pedidos', icon: '🧾' },
-  { key: 'chat', label: 'Conversas', icon: '💬' }, { key: 'profile', label: 'Perfil', icon: '👤' }];
+const TABS = [{ key: 'home', label: 'Início', icon: 'home-outline' }, { key: 'orders', label: 'Pedidos', icon: 'receipt-outline' },
+  { key: 'chat', label: 'Conversas', icon: 'chatbubble-ellipses-outline' }, { key: 'profile', label: 'Perfil', icon: 'person-outline' }] as const;
 
 export default function ConsumerApp({ user, onLogout }: any) {
   const [tab, setTab] = useState('home');
+  const intro = useRef(new Animated.Value(1)).current;
+  const storeRequest = useRef(0);
+  useEffect(() => {
+    let active = true;
+    AccessibilityInfo.isReduceMotionEnabled().then(reduced => {
+      if (!active || reduced) return;
+      intro.setValue(0);
+      Animated.timing(intro, { toValue: 1, duration: 520, easing: Easing.out(Easing.cubic), useNativeDriver: true }).start();
+    }).catch(() => {});
+    return () => { active = false; intro.stopAnimation(); };
+  }, [intro]);
   const [view, setView] = useState<any>({ name: 'home' });
   const [stores, setStores] = useState<any[]>([]);
+  const [storeError, setStoreError] = useState(false);
+  const [storesLoading, setStoresLoading] = useState(true);
   const [categories, setCategories] = useState<any[]>([]);
   const [category, setCategory] = useState('');
   const [search, setSearch] = useState('');
@@ -34,12 +48,14 @@ export default function ConsumerApp({ user, onLogout }: any) {
   const [error, setError] = useState('');
 
   const loadStores = useCallback(async () => {
+    const request = ++storeRequest.current;
+    setStoresLoading(true);
     try {
       const qs = new URLSearchParams();
       if (category) qs.set('category', category);
       if (search) qs.set('q', search);
-      const r = await api.get(`/catalog/establishments?${qs}`); setStores(r.items);
-    } catch { setStores([]); }
+      const r = await api.get(`/catalog/establishments?${qs}`); if (request === storeRequest.current) { setStores(r.items); setStoreError(false); }
+    } catch { if (request === storeRequest.current) { setStores([]); setStoreError(true); } } finally { if (request === storeRequest.current) setStoresLoading(false); }
   }, [category, search]);
   const loadBase = useCallback(async () => {
     try {
@@ -49,7 +65,7 @@ export default function ConsumerApp({ user, onLogout }: any) {
   }, []);
   const loadOrders = useCallback(async () => { try { const r = await api.get('/orders/mine'); setOrders(r.items); } catch {} }, []);
   const loadConvs = useCallback(async () => { try { const r = await api.get('/chat/conversations'); setConvs(r.items); } catch {} }, []);
-  useEffect(() => { loadBase(); loadStores(); loadOrders(); loadConvs(); }, []);
+  useEffect(() => { loadBase(); loadOrders(); loadConvs(); }, []);
   useEffect(() => { loadStores(); }, [loadStores]);
   useEffect(() => {
     const token = getToken(); if (!token) return;
@@ -108,18 +124,24 @@ export default function ConsumerApp({ user, onLogout }: any) {
   return <View style={styles.root}>
     <ScrollView contentContainerStyle={styles.content} refreshControl={<RefreshControl refreshing={false} onRefresh={() => { loadStores(); loadOrders(); loadConvs(); }} />}>
       {view.name === 'home' && <>
-        <View style={styles.hero}><Text style={styles.heroEyebrow}>FASTDELIVERY · DELIVERY LOCAL</Text><Text style={styles.heroTitle}>Seu próximo pedido começa aqui.</Text>
-          <Text style={styles.heroSub}>Descubra lojas independentes e peça em poucos toques.</Text>
-          <Input placeholder="Buscar loja ou prato" value={search} onChangeText={setSearch} onSubmitEditing={loadStores} />
-        </View>
+        <View style={styles.brandBar}><View style={{ flexDirection: 'row', alignItems: 'center', gap: 9 }}><Image source={require('../assets/fastdelivery-mark.png')} style={styles.brandIcon} /><View><Text style={styles.brandName}>FastDelivery</Text><Text style={styles.brandCaption}>DELIVERY LOCAL</Text></View></View><Pressable accessibilityLabel="Abrir perfil" onPress={() => { setTab('profile'); setView({ name: 'profile' }); }} style={styles.profileButton}><Ionicons name="person-outline" size={21} color={theme.ink} /></Pressable></View>
+        <Animated.View style={[styles.hero, { opacity: intro, transform: [{ translateY: intro.interpolate({ inputRange: [0, 1], outputRange: [12, 0] }) }] }]}>
+          <View style={styles.heroCopy}><Text style={styles.heroEyebrow}>SEU DELIVERY, DO SEU JEITO</Text><Text style={styles.heroTitle}>O melhor da cidade. <Text style={styles.heroAccent}>Mais perto de você.</Text></Text>
+          <Text style={styles.heroSub}>Descubra lojas e sabores da sua cidade.</Text></View>
+          <Image source={require('../assets/fastdelivery-hero.jpg')} style={styles.heroImage} />
+        </Animated.View>
+        <View style={styles.searchBox}><Ionicons name="search-outline" size={20} color="#826d5f" /><View style={{ flex: 1, marginBottom: -12 }}><Input inputStyle={{ borderWidth: 0 }} placeholder="O que você quer pedir?" value={search} onChangeText={setSearch} onSubmitEditing={loadStores} /></View></View>
+        <View style={styles.sectionIntro}><Text style={styles.sectionTitle}>Explore categorias</Text><Text style={styles.sectionCaption}>Escolha o que combina com você</Text></View>
         <ScrollView horizontal showsHorizontalScrollIndicator={false} style={styles.chips}>
           <Pressable onPress={() => setCategory('')} style={[styles.chip, !category && styles.chipOn]}><Text style={[styles.chipText, !category && styles.chipTextOn]}>Todos</Text></Pressable>
           {categories.map(c => <Pressable key={c.id} onPress={() => setCategory(c.id)} style={[styles.chip, category === c.id && styles.chipOn]}>
             <Text style={[styles.chipText, category === c.id && styles.chipTextOn]}>{c.name}</Text></Pressable>)}
         </ScrollView>
-        <Title>{stores.length} estabelecimentos</Title>
-        {stores.map(s => <Pressable key={s.id} onPress={() => openStore(s.slug)} style={styles.storeCard}>
-          <View style={styles.storeIcon}><Text style={{ fontSize: 24 }}>{s.name.charAt(0)}</Text></View>
+        <View style={styles.sectionIntro}><Text style={styles.sectionTitle}>Explore estabelecimentos</Text><Text style={styles.sectionCaption}>{storesLoading ? 'Carregando...' : storeError ? 'Não foi possível carregar as lojas.' : `${stores.length} estabelecimento${stores.length === 1 ? '' : 's'}`}</Text></View>
+        {storeError && <Button variant="outline" onPress={loadStores}>Tentar novamente</Button>}
+        {!storesLoading && !storeError && stores.length === 0 && <Empty title="Nenhuma loja encontrada" text="Tente outra busca ou categoria." />}
+        {stores.map(s => <Pressable key={s.id} onPress={() => openStore(s.slug)} style={({ pressed }) => [styles.storeCard, pressed && { opacity: .85, transform: [{ scale: .99 }] }]}>
+          <View style={styles.storeIcon}><Text style={{ fontSize: 23, color: theme.coral, fontWeight: '800' }}>{s.name.charAt(0)}</Text></View>
           <View style={{ flex: 1 }}><Text style={styles.storeName}>{s.name}</Text>
             <Muted>{s.categoryName} · {s.neighborhood}</Muted>
             <View style={{ flexDirection: 'row', flexWrap: 'wrap', gap: 8, marginTop: 6 }}>
@@ -222,7 +244,7 @@ export default function ConsumerApp({ user, onLogout }: any) {
       </>}
     </ScrollView>
     <View style={styles.tabbar}>{TABS.map(t => <Pressable key={t.key} onPress={() => { setTab(t.key); setView({ name: t.key === 'home' ? 'home' : t.key === 'orders' ? 'orders' : t.key === 'chat' ? 'chatList' : 'profile' }); }}
-      style={styles.tabItem}><Text style={{ fontSize: 19, opacity: tab === t.key ? 1 : 0.4 }}>{t.icon}</Text>
+      accessibilityRole="tab" accessibilityState={{ selected: tab === t.key }} style={styles.tabItem}><View style={[styles.tabIcon, tab === t.key && styles.tabIconOn]}><Ionicons name={t.icon} size={20} color={tab === t.key ? theme.coral : theme.muted} /></View>
       <Text style={[styles.tabLabel, tab === t.key && styles.tabLabelOn]}>{t.label}</Text></Pressable>)}</View>
 
     <Overlay visible={!!product} onClose={() => setProduct(null)}>
@@ -241,10 +263,11 @@ export default function ConsumerApp({ user, onLogout }: any) {
   </View>;
 }
 const styles = StyleSheet.create({ root: { flex: 1, backgroundColor: theme.mist }, content: { padding: 18, paddingBottom: 100 },
-  hero: { backgroundColor: theme.ink, borderRadius: 22, padding: 20, marginBottom: 16 }, heroTitle: { color: '#fff', fontSize: 22, fontWeight: '900', lineHeight: 28 },
-  heroEyebrow: { color: '#f6c78c', fontSize: 10, fontWeight: '800', letterSpacing: 1.2, marginBottom: 10 }, heroSub: { color: 'rgba(255,255,255,.85)', fontSize: 12, marginBottom: 14 }, chips: { marginBottom: 16 }, chip: { paddingHorizontal: 14, paddingVertical: 9, backgroundColor: '#fff', borderRadius: 14, marginRight: 8, borderWidth: 1, borderColor: theme.line },
+  brandBar: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', marginBottom: 20 }, brandIcon: { width: 43, height: 43, borderRadius: 13 }, brandName: { fontSize: 16, fontWeight: '900', color: theme.ink, letterSpacing: -.5 }, brandCaption: { fontSize: 9, letterSpacing: 1, fontWeight: '700', color: theme.muted }, profileButton: { width: 43, height: 43, borderRadius: 15, backgroundColor: '#fff', borderWidth: 1, borderColor: theme.line, alignItems: 'center', justifyContent: 'center' },
+  hero: { backgroundColor: '#f1e5d8', borderRadius: 26, overflow: 'hidden', borderWidth: 1, borderColor: theme.line, marginBottom: 14 }, heroCopy: { padding: 23 }, heroTitle: { color: theme.ink, fontSize: 27, fontWeight: '900', letterSpacing: -1, lineHeight: 32 }, heroAccent: { color: theme.coral },
+  heroEyebrow: { color: '#9b3c25', fontSize: 10, fontWeight: '800', letterSpacing: 1.2, marginBottom: 10 }, heroSub: { color: '#705c4e', fontSize: 13, lineHeight: 19, marginTop: 9 }, heroImage: { width: '100%', height: 130, resizeMode: 'cover' }, searchBox: { flexDirection: 'row', alignItems: 'center', gap: 10, paddingLeft: 15, backgroundColor: '#fff', borderWidth: 1, borderColor: theme.line, borderRadius: 16, marginBottom: 24 }, sectionIntro: { marginBottom: 12 }, sectionTitle: { fontSize: 20, fontWeight: '900', color: theme.ink, letterSpacing: -.5 }, sectionCaption: { fontSize: 12, color: theme.muted, marginTop: 3 }, chips: { marginBottom: 24 }, chip: { paddingHorizontal: 17, paddingVertical: 12, backgroundColor: '#fff', borderRadius: 14, marginRight: 8, borderWidth: 1, borderColor: theme.line },
   chipOn: { backgroundColor: theme.coral, borderColor: theme.coral }, chipText: { fontSize: 11, fontWeight: '700', color: theme.ink }, chipTextOn: { color: '#fff' },
-  storeCard: { flexDirection: 'row', gap: 12, backgroundColor: '#fff', borderRadius: 18, padding: 14, marginBottom: 10 },
+  storeCard: { flexDirection: 'row', gap: 12, backgroundColor: '#fff', borderRadius: 20, padding: 16, marginBottom: 10, borderWidth: 1, borderColor: theme.line, shadowColor: '#402920', shadowOpacity: .06, shadowRadius: 12, shadowOffset: { width: 0, height: 5 }, elevation: 2 },
   storeIcon: { width: 52, height: 52, borderRadius: 14, backgroundColor: '#fff2ee', alignItems: 'center', justifyContent: 'center' },
   storeName: { fontSize: 14, fontWeight: '800', color: theme.ink }, price: { color: theme.coral, fontWeight: '900', fontSize: 15, marginTop: 6 },
   productCard: { flexDirection: 'row', gap: 12, backgroundColor: '#fff', borderRadius: 16, padding: 12, marginBottom: 8 }, productIcon: { width: 54, height: 54, borderRadius: 12, backgroundColor: '#fff8f1', alignItems: 'center', justifyContent: 'center' },
@@ -254,4 +277,4 @@ const styles = StyleSheet.create({ root: { flex: 1, backgroundColor: theme.mist 
   error: { color: '#c62828', fontSize: 12, fontWeight: '700', marginVertical: 6 }, message: { backgroundColor: '#fff', padding: 12, borderRadius: 14, marginVertical: 4, maxWidth: '85%' },
   messageMine: { backgroundColor: theme.ink, alignSelf: 'flex-end' }, option: { flexDirection: 'row', justifyContent: 'space-between', backgroundColor: '#fff', borderRadius: 12, padding: 12, marginVertical: 4, borderWidth: 1, borderColor: theme.line },
   optionOn: { borderColor: theme.coral, backgroundColor: '#fff5f2' }, tabbar: { position: 'absolute', bottom: 0, left: 0, right: 0, flexDirection: 'row', backgroundColor: '#fff', paddingVertical: 10, borderTopWidth: 1, borderTopColor: theme.line },
-  tabItem: { flex: 1, alignItems: 'center' }, tabLabel: { fontSize: 10, color: theme.muted, marginTop: 2 }, tabLabelOn: { color: theme.coral, fontWeight: '800' } });
+  tabItem: { flex: 1, alignItems: 'center' }, tabIcon: { paddingHorizontal: 14, paddingVertical: 3, borderRadius: 12 }, tabIconOn: { backgroundColor: '#f9ebe2' }, tabLabel: { fontSize: 10, color: theme.muted, marginTop: 2 }, tabLabelOn: { color: theme.coral, fontWeight: '800' } });

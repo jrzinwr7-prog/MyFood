@@ -8,33 +8,18 @@ import { Badge, Button, Card, EmptyState, SectionTitle, Spinner } from '../compo
 import { ConsumerShell } from '../components/Layout';
 
 function StoreCard({ e, favorite }: { e: any; favorite?: boolean }) {
-  return <Link to={`/loja/${e.slug}`} className="card-hover block overflow-hidden rounded-3xl border border-line/80 bg-white shadow-card">
-    <div className="relative h-36 overflow-hidden bg-gradient-to-br from-ink to-navy">
-      {e.coverUrl ? <img src={e.coverUrl} alt="" className="h-full w-full object-cover" loading="lazy" /> :
-        <div className="grid h-full w-full place-items-center bg-[#f3e7db] text-[#a46b4b]"><StoreIcon size={36} strokeWidth={1.3} /></div>}
-      <div className="absolute inset-0 bg-gradient-to-t from-ink/60 via-transparent to-transparent" />
-      <div className="absolute left-3 top-3 flex gap-2">
-        {!e.isOpen && <Badge tone="red">Fechado agora</Badge>}
-        {e.distanceKm != null && <Badge tone="neutral">{e.distanceKm} km</Badge>}
-      </div>
-      {favorite && <span className="absolute right-3 top-3 grid h-8 w-8 place-items-center rounded-full bg-white/90 text-coral"><Heart size={16} fill="currentColor" /></span>}
-      <div className="absolute bottom-3 left-3 flex items-center gap-2 text-white">
-        <span className="grid h-11 w-11 place-items-center overflow-hidden rounded-2xl border-2 border-white bg-white text-lg font-black text-coral">
-          {e.logoUrl ? <img src={e.logoUrl} alt="" className="h-full w-full object-cover" /> : e.name.slice(0, 1)}
-        </span>
-      </div>
+  return <Link to={`/loja/${e.slug}`} className="store-card card-hover">
+    <div className="store-card__visual">
+      {e.coverUrl ? <img src={e.coverUrl} alt="" loading="lazy" /> : <div className="store-card__placeholder"><StoreIcon size={34} strokeWidth={1.35} /></div>}
+      <span className={`store-card__status ${e.isOpen ? 'is-open' : ''}`}><span aria-hidden="true" />{e.isOpen ? 'Aberto' : 'Fechado'}</span>
+      {favorite && <span className="store-card__favorite" aria-label="Favorito"><Heart size={16} fill="currentColor" /></span>}
     </div>
-    <div className="p-4">
-      <div className="flex items-start justify-between gap-2">
-        <h3 className="line-clamp-1 text-sm font-extrabold">{e.name}</h3>
-        <span className="flex shrink-0 items-center gap-1 text-xs font-bold text-tangerine"><Star size={13} fill="currentColor" />{e.ratingAvg ? e.ratingAvg.toFixed(1) : 'Novo'}</span>
+    <div className="store-card__body">
+      <div className="store-card__heading"><span className="store-card__logo">{e.logoUrl ? <img src={e.logoUrl} alt="" /> : e.name.slice(0, 1)}</span>
+        <div className="min-w-0"><h3 className="truncate text-base font-extrabold">{e.name}</h3><p className="truncate text-xs text-ink/65">{e.categoryName} · {e.neighborhood}</p></div>
+        <span className="store-card__rating"><Star size={13} fill="currentColor" />{e.ratingAvg ? e.ratingAvg.toFixed(1) : 'Novo'}</span>
       </div>
-      <p className="mt-1 line-clamp-1 text-xs text-ink/50">{e.categoryName} · {e.neighborhood}</p>
-      <div className="mt-3 flex flex-wrap gap-3 text-[11px] font-bold text-ink/60">
-        <span className="flex items-center gap-1"><Bike size={13} />{e.deliveryFeeCents === 0 ? 'Grátis' : brl(e.deliveryFeeCents)}</span>
-        <span className="flex items-center gap-1"><Clock3 size={13} />{e.prepTimeMin}–{e.prepTimeMin + 15} min</span>
-        <span className="flex items-center gap-1"><MapPin size={13} />{e.city}</span>
-      </div>
+      <div className="store-card__meta"><span><Bike size={15} />{e.deliveryFeeCents === 0 ? 'Grátis' : brl(e.deliveryFeeCents)}</span><span><Clock3 size={15} />{e.prepTimeMin}–{e.prepTimeMin + 15} min</span>{e.distanceKm != null && <span><MapPin size={15} />{e.distanceKm} km</span>}</div>
     </div>
   </Link>;
 }
@@ -89,38 +74,34 @@ export default function Home() {
   const topRated = useMemo(() => items.filter(e => e.ratingCount > 0).sort((a, b) => b.ratingAvg - a.ratingAvg).slice(0, 6), [items]);
 
   return <ConsumerShell>
-    <section className="relative mb-9 overflow-hidden rounded-[2rem] bg-[#f6e8d8] shadow-card">
-      <div className="absolute inset-0 sm:left-[38%]"><img src={`${import.meta.env.BASE_URL}fastdelivery-hero.jpg`} alt="" className="h-full w-full object-cover object-center" /></div>
-      <div className="absolute inset-0 bg-gradient-to-r from-[#fff4e4] via-[#fff4e4]/95 to-[#fff4e4]/55 sm:via-[#fff4e4]/95 sm:to-transparent" />
-      <div className="relative px-6 py-10 sm:px-10 sm:py-14 lg:px-14 lg:py-16">
-        <p className="inline-flex rounded-full border border-coral/20 bg-white/75 px-3 py-2 text-[10px] font-black uppercase tracking-[.16em] text-coral">DELIVERY LOCAL · FEITO PARA SUA CIDADE</p>
-        <h1 className="mt-4 max-w-lg text-4xl font-black leading-[1.08] tracking-tight text-ink sm:text-5xl lg:text-6xl">Seu próximo pedido <span className="text-coral">começa aqui.</span></h1>
-        <p className="mt-4 max-w-sm text-sm leading-relaxed text-ink/75">Descubra os sabores da sua cidade, escolha seus favoritos e acompanhe seu pedido.</p>
-        <form onSubmit={e => { e.preventDefault(); setParams(search ? { q: search } : {}); }} className="mt-7 flex max-w-lg gap-2">
-          <div className="relative min-w-0 flex-1"><Search size={18} className="absolute left-4 top-1/2 -translate-y-1/2 text-ink/50" />
-            <input value={search} onChange={e => setSearch(e.target.value)} aria-label="Buscar restaurantes ou pratos" placeholder="O que você quer comer?" className="h-12 w-full rounded-2xl border border-white bg-white pl-11 pr-4 text-sm text-ink shadow-sm outline-none ring-coral focus:ring-4" /></div>
-          <Button type="submit" className="h-12 shrink-0">Buscar</Button>
+    <section className="home-hero" aria-labelledby="home-heading">
+      <div className="home-hero__content">
+        <div className="home-hero__eyebrow"><span aria-hidden="true" /> DELIVERY LOCAL, DO SEU JEITO</div>
+        <h1 id="home-heading">O melhor da cidade.<br /><em>Mais perto de você.</em></h1>
+        <p>Encontre seus lugares favoritos, descubra novos sabores e acompanhe tudo em um só lugar.</p>
+        <form onSubmit={e => { e.preventDefault(); setParams(search ? { q: search } : {}); }} className="home-search">
+          <Search size={20} aria-hidden="true" /><input value={search} onChange={e => setSearch(e.target.value)} aria-label="Buscar restaurantes ou pratos" placeholder="O que você quer pedir?" />
+          <button type="submit">Buscar <ArrowRight size={17} aria-hidden="true" /></button>
         </form>
-        <div className="mt-5 flex flex-wrap items-center gap-2 text-xs text-ink/75"><MapPin size={15} className="text-coral" />
-          {address ? <span>Entregando em <b>{address.label}, {address.street}, {address.number}</b></span> : <Link to="/perfil" className="font-bold underline underline-offset-2">Informe seu endereço de entrega</Link>}
-        </div>
+        <div className="home-address"><span className="home-address__icon"><MapPin size={16} /></span><div><small>SEU ENDEREÇO</small>{address ? <span>{address.label}, {address.street}, {address.number}</span> : <Link to="/perfil">Adicione um endereço <ArrowRight size={14} /></Link>}</div></div>
       </div>
+      <div className="home-hero__image"><img src={`${import.meta.env.BASE_URL}fastdelivery-hero.jpg`} alt="" /><div className="home-hero__image-label"><span>FASTDELIVERY</span><b>Seu pedido,<br />seu momento.</b></div></div>
     </section>
 
     {banners.length > 0 && <div className="no-scrollbar mb-7 flex gap-3 overflow-x-auto">
-      {banners.map((b, i) => <div key={i} className="flex min-w-[280px] flex-1 items-center justify-between rounded-3xl bg-gradient-to-br from-[#a63118] to-[#b94c20] p-5 text-white shadow-card">
-        <div><p className="text-sm font-black">{b.title}</p><p className="mt-1 text-xs text-white/80">{b.subtitle}</p></div><ArrowRight size={22} /></div>)}
+      {banners.map((b, i) => <div key={i} className="home-promo min-w-[280px] flex-1">
+        <div><p className="text-sm font-black">{b.title}</p><p className="mt-1 text-xs text-white/80">{b.subtitle}</p></div></div>)}
     </div>}
 
-    <section className="mb-8">
+    <section className="home-section mb-10">
       <SectionTitle title="Explore por categoria" subtitle="Escolha uma categoria e descubra opções" />
       <div className="no-scrollbar flex gap-3 overflow-x-auto pb-1">
-        <button aria-pressed={!category} onClick={() => setCategory('')} className={`flex min-w-[86px] flex-col items-center gap-2 rounded-2xl border p-3 text-[11px] font-bold transition ${!category ? 'border-coral bg-coral/10 text-coral' : 'border-line bg-white text-ink/60'}`}>
-          <span className="grid h-10 w-10 place-items-center rounded-xl bg-mist text-lg">✨</span>Todos
+        <button aria-pressed={!category} onClick={() => setCategory('')} className={`category-tile ${!category ? 'is-selected' : ''}`}>
+          <span className="category-tile__icon">✨</span>Todos
         </button>
         {categories.map(c => <button key={c.id} aria-pressed={category === c.id} onClick={() => setCategory(category === c.id ? '' : c.id)}
-          className={`flex min-w-[86px] flex-col items-center gap-2 rounded-2xl border p-3 text-center text-[11px] font-bold transition ${category === c.id ? 'border-coral bg-coral/10 text-coral' : 'border-line bg-white text-ink/60'}`}>
-          <span className="grid h-10 w-10 place-items-center rounded-xl bg-gradient-to-br from-coral/15 to-tangerine/20 text-lg">
+          className={`category-tile ${category === c.id ? 'is-selected' : ''}`}>
+          <span className="category-tile__icon">
             {c.icon === 'pizza' ? '🍕' : c.icon === 'hamburger' ? '🍔' : c.icon === 'ice-cream' ? '🍦' : c.icon === 'cake' ? '🍰' : c.icon === 'coffee' ? '☕' : c.icon === 'sandwich' ? '🥪' : c.icon === 'soup' ? '🍲' : '🍽️'}
           </span>{c.name.replace('arias', 'aria').replace('erias', 'eria')}
         </button>)}

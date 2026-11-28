@@ -13,7 +13,7 @@ export function Button({ children, variant = 'primary', size = 'md', className =
   };
   const sizes = { sm: 'h-9 px-3 text-xs', md: 'h-11 px-5 text-sm', lg: 'h-13 px-6 text-base py-3.5' };
   return <button {...props} disabled={loading || props.disabled}
-    className={`inline-flex items-center justify-center gap-2 rounded-2xl font-bold transition disabled:opacity-50 disabled:cursor-not-allowed ${variants[variant]} ${sizes[size]} ${className}`}>
+    className={`ui-button inline-flex items-center justify-center gap-2 rounded-2xl font-bold transition disabled:opacity-50 disabled:cursor-not-allowed ${variants[variant]} ${sizes[size]} ${className}`}>
     {loading && <Loader2 size={16} className="animate-spin" />}{children}
   </button>;
 }
@@ -75,8 +75,8 @@ export function StatCard({ label, value, hint, icon, tone = 'coral' }: { label: 
   </Card>;
 }
 export function SectionTitle({ title, subtitle, action }: { title: string; subtitle?: string; action?: React.ReactNode }) {
-  return <div className="mb-4 flex flex-wrap items-end justify-between gap-3">
-    <div><h2 className="text-lg font-extrabold tracking-tight sm:text-xl">{title}</h2>{subtitle && <p className="mt-0.5 text-xs text-ink/50">{subtitle}</p>}</div>{action}
+  return <div className="section-heading mb-5 flex flex-wrap items-end justify-between gap-3">
+    <div><h2 className="text-xl font-extrabold tracking-tight sm:text-2xl">{title}</h2>{subtitle && <p className="mt-0.5 text-xs text-ink/50">{subtitle}</p>}</div>{action}
   </div>;
 }
 export const STATUS_TONE: Record<string, any> = {
