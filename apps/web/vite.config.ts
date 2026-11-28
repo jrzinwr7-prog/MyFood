@@ -15,5 +15,5 @@ export default defineConfig({
       '/ws': { target: 'ws://127.0.0.1:4000', ws: true },
     },
   },
-  build: { outDir: 'dist' },
+  build: { outDir: process.env.VITE_DEMO === 'true' ? 'dist-demo' : 'dist' },
 });

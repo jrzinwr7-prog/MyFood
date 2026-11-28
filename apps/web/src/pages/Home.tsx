@@ -1,7 +1,7 @@
 import { useEffect, useMemo, useState } from 'react';
 import { Link, useSearchParams } from 'react-router-dom';
 import { Search, Star, Bike, Clock3, MapPin, SlidersHorizontal, Heart, ArrowRight, Store as StoreIcon, X, LayoutGrid, Pizza, Coffee, IceCreamBowl, CakeSlice, Sandwich, Soup, UtensilsCrossed } from 'lucide-react';
-import { api, VISUAL_PREVIEW } from '../lib/api';
+import { api, VISUAL_PREVIEW, DEMO_MODE } from '../lib/api';
 import { brl } from '../lib/format';
 import { useApp } from '../state/AppContext';
 import { Badge, Button, Card, EmptyState, SectionTitle, Spinner } from '../components/ui';
@@ -60,7 +60,7 @@ export default function Home() {
     setLoading(true); setLoadError(false);
     const qs = new URLSearchParams({ sort });
     if (q) qs.set('q', q); if (category) qs.set('category', category); if (openOnly) qs.set('open', 'true');
-    if (VISUAL_PREVIEW) load(qs);
+    if (VISUAL_PREVIEW || DEMO_MODE) load(qs);
     else if (navigator.geolocation) navigator.geolocation.getCurrentPosition(p => { qs.set('lat', String(p.coords.latitude)); qs.set('lng', String(p.coords.longitude)); load(qs); }, () => load(qs), { timeout: 3000 });
     else load(qs);
     async function load(p: URLSearchParams) {

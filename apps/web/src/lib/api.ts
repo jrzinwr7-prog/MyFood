@@ -1,16 +1,19 @@
 import type { CartItem } from '@myfood/shared';
+import { demoRequest } from '../../../../demo-temporaria/catalogo';
 
+export const DEMO_MODE = import.meta.env.VITE_DEMO === 'true';
 export const API_ORIGIN = (import.meta.env.VITE_API_ORIGIN || '').replace(/\/$/, '');
 export const VISUAL_PREVIEW = import.meta.env.VITE_VISUAL_PREVIEW === 'true';
 export const TOKEN_KEY = 'myfood_token';
-export const getToken = () => localStorage.getItem(TOKEN_KEY);
-export const setToken = (token: string | null) => token ? localStorage.setItem(TOKEN_KEY, token) : localStorage.removeItem(TOKEN_KEY);
+export const getToken = () => DEMO_MODE ? null : localStorage.getItem(TOKEN_KEY);
+export const setToken = (token: string | null) => { if (!DEMO_MODE) token ? localStorage.setItem(TOKEN_KEY, token) : localStorage.removeItem(TOKEN_KEY); };
 
 export class ApiError extends Error {
   constructor(public status: number, message: string, public code?: string, public details?: any[]) { super(message); }
 }
 
 export async function request<T = any>(path: string, opts: { method?: string; body?: any; token?: boolean } = {}): Promise<T> {
+  if (DEMO_MODE) return demoRequest(path, opts.method ?? 'GET', import.meta.env.BASE_URL) as Promise<T>;
   if (VISUAL_PREVIEW) throw new ApiError(503, 'Esta é uma prévia visual. O servidor ainda não está conectado.');
   const token = opts.token === false ? null : getToken();
   const res = await fetch(`${API_ORIGIN}/api${path}`, {
@@ -31,7 +34,7 @@ export const api = {
 
 export type CartState = { establishmentId: string; establishmentName: string; establishmentSlug?: string; deliveryFeeCents: number; items: CartItem[] };
 // Carrinhos anteriores podiam conter valores incorretos de adicionais; não os reutilize.
-const CART_KEY = 'myfood_cart_v2';
+const CART_KEY = DEMO_MODE ? 'fastdelivery_demo_cart_v1' : 'myfood_cart_v2';
 export function loadCart(): CartState | null {
   try { const raw = localStorage.getItem(CART_KEY); return raw ? JSON.parse(raw) : null; } catch { return null; }
 }

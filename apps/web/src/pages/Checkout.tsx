@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { ArrowLeft, Banknote, CreditCard, MapPin, Plus, QrCode, ShieldCheck, Check } from 'lucide-react';
-import { api, API_ORIGIN } from '../lib/api';
+import { api, API_ORIGIN, DEMO_MODE } from '../lib/api';
 import { brl, cepMask } from '../lib/format';
 import { useApp } from '../state/AppContext';
 import { ConsumerShell } from '../components/Layout';
@@ -43,6 +43,7 @@ export default function Checkout() {
     } catch (e: any) { toast(e.message, 'error'); }
   }
   async function confirm() {
+    if (DEMO_MODE) { setError('Demonstração encerrada antes do pagamento. Nenhum pedido foi criado.'); return; }
     if (!accept || !cart || !addressId) { setError('Aceite os termos e selecione um endereço.'); return; }
     setCreating(true); setError('');
     try {
@@ -73,7 +74,7 @@ export default function Checkout() {
       <div className="space-y-5">
         <Card className="p-5">
           <div className="mb-4 flex items-center justify-between"><h2 className="text-base font-extrabold">Endereço de entrega</h2>
-            <button onClick={() => setNewOpen(true)} className="flex items-center gap-1 text-xs font-bold text-coral"><Plus size={14} />Novo endereço</button></div>
+            {!DEMO_MODE && <button onClick={() => setNewOpen(true)} className="flex items-center gap-1 text-xs font-bold text-coral"><Plus size={14} />Novo endereço</button>}</div>
           {addresses.length === 0 && !newOpen ? <p className="text-sm text-ink/50">Cadastre um endereço para continuar.</p> :
             <div className="space-y-2">{addresses.map(a => <button key={a.id} onClick={() => setAddressId(a.id)} className={`flex w-full items-center gap-3 rounded-2xl border p-3 text-left ${addressId === a.id ? 'border-coral bg-coral/5' : 'border-line'}`}>
               <MapPin size={18} className={addressId === a.id ? 'text-coral' : 'text-ink/40'} />
@@ -111,9 +112,9 @@ export default function Checkout() {
             <div className="flex justify-between"><dt className="text-ink/55">Entrega</dt><dd>{brl(cart.deliveryFeeCents)}</dd></div>
             <div className="flex justify-between text-lg font-black"><dt>Total</dt><dd className="text-coral">{brl(cartTotals?.total_cents ?? 0)}</dd></div>
           </dl>
-          <label className="mt-4 flex items-start gap-2 text-[11px] text-ink/60"><input type="checkbox" checked={accept} onChange={e => setAccept(e.target.checked)} className="mt-0.5 accent-coral" />Li e aceito os <Link className="text-coral underline" to="/termos">termos de uso</Link> e a <Link className="text-coral underline" to="/privacidade">política de privacidade</Link>.</label>
+          {!DEMO_MODE && <label className="mt-4 flex items-start gap-2 text-[11px] text-ink/60"><input type="checkbox" checked={accept} onChange={e => setAccept(e.target.checked)} className="mt-0.5 accent-coral" />Li e aceito os <Link className="text-coral underline" to="/termos">termos de uso</Link> e a <Link className="text-coral underline" to="/privacidade">política de privacidade</Link>.</label>}
           {error && <p className="mt-3 rounded-xl bg-red-50 p-3 text-xs font-bold text-red-600">{error}</p>}
-          <Button className="mt-4 w-full" size="lg" loading={creating} onClick={confirm}><ShieldCheck size={17} />Confirmar pedido</Button>
+          {DEMO_MODE ? <p role="status" className="mt-4 rounded-2xl border border-amber-200 bg-amber-50 p-4 text-sm font-semibold text-amber-900">Fim da demonstração: nenhum pedido será criado e nenhum pagamento será realizado.</p> : <Button className="mt-4 w-full" size="lg" loading={creating} onClick={confirm}><ShieldCheck size={17} />Confirmar pedido</Button>}
         </Card>
       </div>
     </div>

@@ -1,7 +1,7 @@
 import { useEffect, useMemo, useState } from 'react';
 import { Link, useParams } from 'react-router-dom';
 import { ArrowLeft, Bike, Clock3, Heart, Info, MapPin, Minus, Plus, ShoppingBag, Star, X, UtensilsCrossed, Store } from 'lucide-react';
-import { api } from '../lib/api';
+import { api, DEMO_MODE } from '../lib/api';
 import { brl, phone } from '../lib/format';
 import { useApp } from '../state/AppContext';
 import { ConsumerShell } from '../components/Layout';
@@ -111,7 +111,7 @@ export default function StorePage() {
         <span className="flex items-center gap-1.5 rounded-xl bg-white px-3 py-2 shadow-card"><Bike size={14} className="text-coral" />{est.deliveryFeeCents ? brl(est.deliveryFeeCents) : 'Entrega grátis'}</span>
         <span className="flex items-center gap-1.5 rounded-xl bg-white px-3 py-2 shadow-card"><Clock3 size={14} className="text-coral" />{est.prepTimeMin}–{est.prepTimeMin + 15} min</span>
         <button onClick={() => setHoursOpen(true)} className="flex items-center gap-1.5 rounded-xl bg-white px-3 py-2 shadow-card hover:text-coral"><Info size={14} />Horários</button>
-        <a href={`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(`${est.street}, ${est.number}, ${est.city}`)}`} target="_blank" rel="noreferrer" className="flex items-center gap-1.5 rounded-xl bg-white px-3 py-2 shadow-card hover:text-coral"><MapPin size={14} />Ver no mapa</a>
+        {!DEMO_MODE && <a href={`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(`${est.street}, ${est.number}, ${est.city}`)}`} target="_blank" rel="noreferrer" className="flex items-center gap-1.5 rounded-xl bg-white px-3 py-2 shadow-card hover:text-coral"><MapPin size={14} />Ver no mapa</a>}
       </div>
       {est.description && <p className="mt-3 max-w-2xl text-sm text-ink/60">{est.description}</p>}
     </div>

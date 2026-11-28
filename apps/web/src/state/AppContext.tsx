@@ -1,5 +1,6 @@
 import React, { createContext, useContext, useEffect, useMemo, useState, useCallback } from 'react';
-import { api, getToken, setToken, loadCart, saveCart, type CartState } from '../lib/api';
+import { api, getToken, setToken, loadCart, saveCart, DEMO_MODE, type CartState } from '../lib/api';
+import { demoUser } from '../../../../demo-temporaria/catalogo';
 import { calculateCartTotals } from '@myfood/shared';
 
 type Toast = { id: number; message: string; kind: 'success' | 'error' | 'info' };
@@ -13,7 +14,7 @@ const Context = createContext<Ctx>(null as any);
 export const useApp = () => useContext(Context);
 
 export function AppProvider({ children }: { children: React.ReactNode }) {
-  const [user, setUser] = useState<any | null>(null);
+  const [user, setUser] = useState<any | null>(DEMO_MODE ? demoUser : null);
   const [loadingAuth, setLoadingAuth] = useState(true);
   const [cart, setCartState] = useState<CartState | null>(loadCart());
   const [toasts, setToasts] = useState<Toast[]>([]);
@@ -25,6 +26,7 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
   }, []);
 
   const refreshUser = useCallback(async () => {
+    if (DEMO_MODE) { setUser(demoUser); setLoadingAuth(false); return; }
     if (!getToken()) { setUser(null); setLoadingAuth(false); return; }
     try { const r = await api.get('/auth/me'); setUser(r.user); }
     catch { setToken(null); setUser(null); }
@@ -43,7 +45,7 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
     const r = await api.post('/auth/register', body);
     setToken(r.token); setUser(r.user); toast(r.message ?? 'Conta criada!'); return r;
   };
-  const logout = () => { setToken(null); setUser(null); setCart(null); toast('Sessão encerrada', 'info'); };
+  const logout = () => { if (DEMO_MODE) { toast('A conta desta demonstração é fictícia.', 'info'); return; } setToken(null); setUser(null); setCart(null); toast('Sessão encerrada', 'info'); };
 
   return <Context.Provider value={{ user, loadingAuth, login, register, logout, refreshUser, cart, setCart, cartTotals, toasts, toast }}>
     {children}

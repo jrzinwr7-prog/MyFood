@@ -27,6 +27,7 @@ jobs:
           VITE_VISUAL_PREVIEW: 'false'
           VITE_TEMP_TEST: 'true'
           VITE_API_ORIGIN: https://myfood-api-teste.onrender.com
+      - run: npm run build:demo && cp -R apps/web/dist-demo apps/web/dist/demo
       - uses: actions/upload-pages-artifact@v3
         with:
           path: apps/web/dist

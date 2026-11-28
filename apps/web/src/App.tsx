@@ -32,6 +32,7 @@ import AdminFinance from './pages/admin/AdminFinance';
 import AdminSettings from './pages/admin/AdminSettings';
 import AdminSupport from './pages/admin/AdminSupport';
 import { Spinner } from './components/ui';
+import { DEMO_MODE } from './lib/api';
 
 function RoutesView() {
   const { loadingAuth } = useApp();
@@ -78,5 +79,5 @@ function RoutesView() {
 }
 export default function App() {
   const Router = import.meta.env.VITE_HASH_ROUTER === 'true' ? HashRouter : BrowserRouter;
-  return <Router><AppProvider>{import.meta.env.VITE_VISUAL_PREVIEW === 'true' && <div role="status" className="bg-amber-100 px-4 py-3 text-center text-sm font-bold text-amber-900">Prévia visual: servidor não conectado. Cadastros, pedidos e pagamentos não estão disponíveis.</div>}{import.meta.env.VITE_TEMP_TEST === 'true' && <div role="status" className="bg-amber-100 px-4 py-3 text-center text-sm font-bold text-amber-900">Ambiente de teste temporário: use apenas dados fictícios. Contas podem ser apagadas; não faça pedidos ou pagamentos reais.</div>}<RoutesView /></AppProvider></Router>;
+  return <Router><AppProvider>{DEMO_MODE && <div role="status" className="bg-amber-100 px-4 py-3 text-center text-sm font-bold text-amber-950">Demonstração temporária: lojas, preços e endereço são fictícios. Nenhum pedido ou pagamento é realizado.</div>}{import.meta.env.VITE_VISUAL_PREVIEW === 'true' && <div role="status" className="bg-amber-100 px-4 py-3 text-center text-sm font-bold text-amber-900">Prévia visual: servidor não conectado. Cadastros, pedidos e pagamentos não estão disponíveis.</div>}{import.meta.env.VITE_TEMP_TEST === 'true' && <div role="status" className="bg-amber-100 px-4 py-3 text-center text-sm font-bold text-amber-900">Ambiente de teste temporário: use apenas dados fictícios. Contas podem ser apagadas; não faça pedidos ou pagamentos reais.</div>}<RoutesView /></AppProvider></Router>;
 }

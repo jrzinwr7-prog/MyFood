@@ -6,6 +6,7 @@ import { brl } from '../lib/format';
 import { ConsumerShell } from '../components/Layout';
 import { Button, Card, EmptyState, Input } from '../components/ui';
 import { itemUnitCents } from '@myfood/shared';
+import { DEMO_MODE } from '../lib/api';
 
 export default function Cart() {
   const { cart, setCart, cartTotals, toast } = useApp();
@@ -48,8 +49,8 @@ export default function Cart() {
       <div className="lg:sticky lg:top-24 lg:self-start">
         <Card className="p-5">
           <h2 className="mb-4 text-base font-extrabold">Resumo</h2>
-          <div className="mb-4"><Input label="Cupom de desconto (opcional)" value={coupon} onChange={e => setCoupon(e.target.value.toUpperCase())} placeholder="EX: MYFOOD10" />
-            {applied && <p className="mt-1 text-[11px] font-bold text-mint">Cupom {applied} aplicado no próximo passo</p>}</div>
+          {!DEMO_MODE && <div className="mb-4"><Input label="Cupom de desconto (opcional)" value={coupon} onChange={e => setCoupon(e.target.value.toUpperCase())} placeholder="EX: MYFOOD10" />
+            {applied && <p className="mt-1 text-[11px] font-bold text-mint">Cupom {applied} aplicado no próximo passo</p>}</div>}
           <dl className="space-y-2 text-sm">
             <div className="flex justify-between"><dt className="text-ink/55">Subtotal</dt><dd className="font-bold">{brl(cartTotals?.subtotal_cents ?? 0)}</dd></div>
             <div className="flex justify-between"><dt className="text-ink/55">Taxa de entrega</dt><dd className="font-bold">{brl(cart.deliveryFeeCents)}</dd></div>
@@ -57,7 +58,7 @@ export default function Cart() {
             <div className="flex justify-between text-lg"><dt className="font-extrabold">Total</dt><dd className="font-black text-coral">{brl(cartTotals?.total_cents ?? 0)}</dd></div>
           </dl>
           <Button className="mt-5 w-full" size="lg" onClick={() => navigate('/checkout', { state: { coupon: coupon || undefined } })}>Continuar para pagamento</Button>
-          <p className="mt-3 text-center text-[11px] text-ink/45">O valor final é recalculado no servidor ao confirmar o pedido.</p>
+          <p className="mt-3 text-center text-[11px] text-ink/45">{DEMO_MODE ? 'Valores fictícios para visualização; nenhum pedido será criado.' : 'O valor final é recalculado no servidor ao confirmar o pedido.'}</p>
         </Card>
       </div>
     </div>
